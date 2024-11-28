@@ -368,77 +368,78 @@ function PortfolioForm() {
         {/* Experiences */}
         <label className="block font-semibold mb-2">Experiences</label>
         {formData.experiences.map((experience, index) => (
-          <div key={index} className="mb-4 p-2 bg-gray-100 rounded-lg">
-            <input
-              required
-              type="text"
-              placeholder="Company Name"
-              value={experience.companyName}
-              onChange={(e) =>
-                handleChange(e, "experiences", index, "companyName")
-              }
-              className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
-            />
-
-            <input
-              required
-              type="text"
-              placeholder="Role"
-              value={experience.role}
-              onChange={(e) => handleChange(e, "experiences", index, "role")}
-              className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
-            />
-            <textarea
-              placeholder="Description"
-              value={experience.description}
-              onChange={(e) =>
-                handleChange(e, "experiences", index, "description")
-              }
-              className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
-            ></textarea>
-            {/* <input
-            required
-              type="text"
-              placeholder="Technologies (comma-separated)"
-              value={experience.technologies.join(', ')}
-              onChange={(e) =>
-                handleChange(e, 'experiences', index, 'technologies', e.target.value.split(','))
-              }
-              className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
-            /> */}
-            <input
-              required
-              type="text"
-              placeholder="Technologies (comma-separated)"
-              value={
-                Array.isArray(experience.technologies)
-                  ? experience.technologies.join(", ")
-                  : ""
-              }
-              onChange={(e) =>
-                handleChange(
-                  e,
-                  "experiences",
-                  index,
-                  "technologies",
-                  e.target.value
-                    .split(",")
-                    .map((item) => item.trim())
-                    .filter(Boolean)
-                )
-              }
-              className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
-            />
-            <input
-              required
-              type="text"
-              placeholder="Duration (e.g., Jan 2022 - Dec 2022)"
-              value={experience.duration}
-              onChange={(e) =>
-                handleChange(e, "experiences", index, "duration")
-              }
-              className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
-            />
+          <div
+            key={index}
+            className="flex flex-row-reverse mb-4 p-2 bg-gray-100 rounded-lg relative"
+          >
+            <button
+              type="button"
+              onClick={() => handleRemoveItem("experiences", index)}
+              className=" text-red-500 flex items-center"
+            >
+              <AiOutlineDelete className="mr-1" />
+            </button>
+            <div>
+              <input
+                required
+                type="text"
+                placeholder="Company Name"
+                value={experience.companyName}
+                onChange={(e) =>
+                  handleChange(e, "experiences", index, "companyName")
+                }
+                className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
+              />
+              <input
+                required
+                type="text"
+                placeholder="Role"
+                value={experience.role}
+                onChange={(e) => handleChange(e, "experiences", index, "role")}
+                className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
+              />
+              <textarea
+                placeholder="Description"
+                value={experience.description}
+                onChange={(e) =>
+                  handleChange(e, "experiences", index, "description")
+                }
+                className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
+              ></textarea>
+              <input
+                required
+                type="text"
+                placeholder="Technologies (comma-separated)"
+                value={
+                  Array.isArray(experience.technologies)
+                    ? experience.technologies.join(", ")
+                    : ""
+                }
+                onChange={(e) =>
+                  handleChange(
+                    e,
+                    "experiences",
+                    index,
+                    "technologies",
+                    e.target.value
+                      .split(",")
+                      .map((item) => item.trim())
+                      .filter(Boolean)
+                  )
+                }
+                className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
+              />
+              <input
+                required
+                type="text"
+                placeholder="Duration (e.g., Jan 2022 - Dec 2022)"
+                value={experience.duration}
+                onChange={(e) =>
+                  handleChange(e, "experiences", index, "duration")
+                }
+                className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
+              />
+            </div>
           </div>
         ))}
         <button
