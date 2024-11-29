@@ -1,5 +1,4 @@
 import { UserInfo } from "../models/userInfo.js";
-
 import fs from "fs-extra";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -7,8 +6,9 @@ import { dirname } from "path";
 import {
   deployPortfolio,
   generatePortfolio,
-} from "../controllers/portfolioGeneratorController.js";
-import { runGeneratedPortfolio } from "../controllers/portfolioGeneratorController.js"; // Import the function to run the portfolio
+  runGeneratedPortfolio,
+} from "../controllers/portfolioGeneratorController.js"; // Import the function to run the portfolio
+
 // Manually define __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -31,7 +31,9 @@ export const createUserInfo = async (req, res) => {
       profilePhoto,
       preferredThemeName,
     } = req.body;
-    console.log("reqq", req.body);
+
+    console.log("Request Body:", req.body);
+
     // Create a new instance of the UserInfo model
     const newUser = new UserInfo({
       name,
@@ -53,26 +55,24 @@ export const createUserInfo = async (req, res) => {
     const savedUser = await newUser.save();
 
     const templatePath = path.join(__dirname, "../threejs-portfolio-main");
-    const outputPath = path.join(__dirname, "../generated-portfolio");
-    let portfolioURL;
-    (async () => {
-      try {
-        // Generate the portfolio
-        await generatePortfolio(templatePath, outputPath, savedUser);
-        await deployPortfolio(outputPath, name.split(" ")[0]);
-        // Run the generated portfolio locally
-        portfolioURL = await runGeneratedPortfolio(
-          templatePath,
-          outputPath,
-          4000
-        ); // Serve on port 4000
-        console.log(`Generated portfolio is accessible at: ${portfolioURL}`);
-      } catch (error) {
-        console.error("Error generating and running portfolio:", error);
-      }
-    })();
+    const outputPath = path.join(__dirname, `../${name.split(" ")[0]}`);
 
-    // Send a success response
+    // Generate and deploy the portfolio
+    await generatePortfolio(templatePath, outputPath, savedUser);
+
+    // Run the generated portfolio and retrieve the URL
+    // const portfolioURL = await runGeneratedPortfolio(
+    //   templatePath,
+    //   outputPath,
+    //   4000
+    // );
+
+    // Deploy the portfolio
+    const portfolioURL = await deployPortfolio(outputPath, name.split(" ")[0]);
+
+    console.log(`Generated portfolio is accessible at: ${portfolioURL}`);
+
+    // Send a success response with the generated URL
     res.status(201).json({
       success: true,
       message: "User portfolio created successfully!",

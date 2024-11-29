@@ -199,21 +199,26 @@ function PortfolioForm() {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      setLoading(true);
+
+      console.log("Form submitted successfully!");
+      // Proceed with submission logic
+    }
+ setLoading(true);
+
       try {
         const res = await axios.post(
           "http://localhost:3000/api/v1//post/userInfo",
           formData
         );
         console.log("res", res);
-        if (res) {
+        if (res.data) {
+          setLoading(false);
           window.location.href = res.data.portfolioURL;
         }
       } catch (error) {
         console.error("Error submitting form:", error);
-      } finally {
-        setTimeout(() => setLoading(false), 60000);
-      }
+      } 
+
     }
   };
 
