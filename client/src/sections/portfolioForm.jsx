@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";
 import axios from "axios";
 import { uploadFile } from "../upload";
+import Loader from './Loader'
+ 
 function PortfolioForm() {
+  const [loading, setLoading] = useState(false);
+ 
   const [formData, setFormData] = useState({
     name: "",
     emailId: "",
@@ -195,16 +199,26 @@ function PortfolioForm() {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
+
       console.log("Form submitted successfully!");
       // Proceed with submission logic
     }
-    const res = await axios.post(
-      "http://localhost:3000/api/v1//post/userInfo",
-      formData
-    );
-    console.log("res", res);
-    if (res.data) {
-      window.location.href = res.data.portfolioURL;
+ setLoading(true);
+
+      try {
+        const res = await axios.post(
+          "http://localhost:3000/api/v1//post/userInfo",
+          formData
+        );
+        console.log("res", res);
+        if (res.data) {
+          setLoading(false);
+          window.location.href = res.data.portfolioURL;
+        }
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      } 
+
     }
   };
 
@@ -594,6 +608,8 @@ function PortfolioForm() {
           Submit
         </button>
       </form>
+      <Loader show={loading}/>
+
     </div>
   );
 }
