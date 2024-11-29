@@ -203,7 +203,7 @@ function PortfolioForm() {
       formData
     );
     console.log("res", res);
-    if (res) {
+    if (res.data) {
       window.location.href = res.data.portfolioURL;
     }
   };

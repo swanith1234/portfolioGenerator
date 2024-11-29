@@ -202,21 +202,13 @@ async function createGitHubRepo({
 
 function pushToGitHub({ repoUrl, projectPath, branch = "main" }) {
   try {
-    console.log("Starting the deployment process...");
+    console.log("Starting the deployment process in steps...");
 
     // Step 1: Initialize Git if not already initialized
     if (!fs.existsSync(`${projectPath}/.git`)) {
       console.log("Initializing Git...");
       execSync("git init", { cwd: projectPath });
     }
-
-    // Step 2: Add all files to staging area
-    console.log("Adding files to Git...");
-    execSync("git add .", { cwd: projectPath });
-
-    // Step 3: Commit changes
-    console.log("Committing changes...");
-    execSync('git commit -m "Initial commit"', { cwd: projectPath });
 
     let remoteExists;
     try {
@@ -228,24 +220,51 @@ function pushToGitHub({ repoUrl, projectPath, branch = "main" }) {
     }
 
     if (remoteExists) {
-      // Step 4: Update remote URL if it exists
+      // Update remote URL if it exists
       console.log("Updating remote repository URL...");
       execSync(`git remote set-url origin ${repoUrl}`, { cwd: projectPath });
     } else {
-      // Step 4: Add remote if it doesn't exist
+      // Add remote if it doesn't exist
       console.log("Adding remote repository...");
       execSync(`git remote add origin ${repoUrl}`, { cwd: projectPath });
     }
 
-    // Step 5: Set the correct branch name and push code
+    // Ensure the correct branch name
     console.log(`Ensuring branch ${branch} exists...`);
-    execSync(`git branch -M ${branch}`, { cwd: projectPath }); // Rename branch to 'main' or provided branch name if not already done
+    execSync(`git branch -M ${branch}`, { cwd: projectPath });
 
-    // Step 6: Push to the remote repository
+    // Step 2: Add node_modules to .gitignore if not already ignored
+
+    // Step 3: Divide the project into manageable chunks for commits
+    const largeFolders = ["dist", "public", "src"]; // Example of large folders
+    const remainingFiles = "."; // All other files and folders
+
+    // Commit each large folder individually
+    for (const folder of largeFolders) {
+      if (folder === "node_modules") {
+        console.log(`Skipping ignored folder: ${folder}`);
+        continue;
+      }
+
+      if (fs.existsSync(`${projectPath}/${folder}`)) {
+        console.log(`Adding and committing folder: ${folder}...`);
+        execSync(`git add ${folder}`, { cwd: projectPath });
+        execSync(`git commit -m "Add folder: ${folder}"`, { cwd: projectPath });
+      } else {
+        console.log(`Folder ${folder} does not exist, skipping...`);
+      }
+    }
+
+    // Commit the remaining files
+    console.log("Adding and committing remaining files...");
+    execSync(`git add ${remainingFiles}`, { cwd: projectPath });
+    execSync('git commit -m "Add remaining files"', { cwd: projectPath });
+
+    // Push all commits to the remote repository
     console.log(`Pushing code to branch: ${branch}...`);
     execSync(`git push -u origin ${branch}`, { cwd: projectPath });
 
-    console.log("Code pushed successfully!");
+    console.log("Code pushed successfully in steps!");
   } catch (error) {
     console.error("Error during deployment:", error.message);
   }
@@ -297,6 +316,37 @@ async function enableGitHubPages({ repoName, accessToken, branch = "main" }) {
   }
 }
 
+async function deployToVercel({ projectPath, accessToken }) {
+  try {
+    console.log(
+      `Starting deployment to Vercel for project at: ${projectPath}...`
+    );
+
+    // Step 1: Build the project
+    console.log("Building the project...");
+    await runVercelCommand("npm run build", projectPath);
+
+    // Step 2: Deploy to Vercel
+    console.log("Deploying to Vercel...");
+    const deployCommand = `vercel --token ${accessToken} --prod --cwd ${projectPath} --yes`;
+    const output = await runVercelCommand(deployCommand, projectPath);
+
+    // Extract the deployment URL from the output
+    const deployedUrlMatch = output.match(/https:\/\/.*\.vercel\.app/);
+    if (!deployedUrlMatch) {
+      throw new Error("Deployment failed: No deployment URL found.");
+    }
+
+    const deployedUrl = deployedUrlMatch[0];
+    console.log(`Deployment successful! Your site is live at: ${deployedUrl}`);
+
+    return deployedUrl; // Return the Vercel deployment URL
+  } catch (error) {
+    console.error("Error during deployment to Vercel:", error.message);
+    throw error;
+  }
+}
+
 // Helper function to execute shell commands
 function runCommand(command) {
   return new Promise((resolve, reject) => {
@@ -319,6 +369,18 @@ function runCommand(command) {
     });
   });
 }
+function runVercelCommand(command, cwd) {
+  console.log("path: " + cwd);
+  return new Promise((resolve, reject) => {
+    exec(command, { cwd }, (error, stdout, stderr) => {
+      if (error) {
+        console.error(stderr);
+        return reject(error);
+      }
+      resolve(stdout);
+    });
+  });
+}
 // Main function to create and deploy the repository
 export async function deployPortfolio(projectPath, userName) {
   const repoName = userName; // Your desired repository name
@@ -335,11 +397,46 @@ export async function deployPortfolio(projectPath, userName) {
 
     // Step 2: Push project files to the repository
     pushToGitHub({ repoUrl, projectPath });
-    await enableGitHubPages({ repoName, accessToken });
+    // await enableGitHubPages({ repoName, accessToken });
+    // Deploy the project to Vercel
+    const deployedUrl = await deployToVercel({
+      projectPath,
+      accessToken: process.env.VERCEL_ACCESS_TOKEN,
+    });
+
+    console.log("Portfolio successfully deployed to Vercel at:", deployedUrl);
     console.log(`Your portfolio is live at: https://${repoName}.github.io`);
+    await deleteGeneratedFolder(projectPath);
+    return deployedUrl;
   } catch (error) {
     console.error("Deployment failed:", error.message);
   }
 }
 
 // Run the script
+async function deleteGeneratedFolder(outputPath) {
+  const maxRetries = 3;
+  let attempts = 0;
+
+  while (attempts < maxRetries) {
+    try {
+      console.log(`Waiting for processes to release folder: ${outputPath}`);
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2-second delay
+
+      console.log(`Attempting to delete folder: ${outputPath}`);
+      await fs.remove(outputPath);
+      console.log("Generated folder deleted successfully!");
+      break;
+    } catch (error) {
+      attempts++;
+      console.error(`Attempt ${attempts} failed:`, error.message);
+      if (attempts >= maxRetries) {
+        console.error(
+          "Maximum retry attempts reached. Could not delete folder."
+        );
+        throw error;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // 1-second retry delay
+    }
+  }
+}
