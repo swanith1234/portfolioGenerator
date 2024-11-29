@@ -5,7 +5,9 @@ module.exports = {
     './public/index.html',             // Include this if you reference Tailwind classes in your HTML
   ],
   theme: {
-    extend: {},
+    extend: {
+  
+    },
   },
   plugins: [],
 };
