@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-
+import { UserInfo } from "./models/UserInfo.js";
 import { google } from "googleapis";
 import "dotenv";
 
@@ -10,17 +10,8 @@ const oAuth2Client = new google.auth.OAuth2(
 );
 oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
 
-
-const sendEmailSelect = async (req, res) => {
-  console.log("request");
-  console.log(req.params);
-
+const sendEmailSelect = async (email, name, url) => {
   try {
-    const application = await Application.findOne({ _id: req.params.id });
-    const employer = await Employer.findOne({
-      _id: application.employerId.user,
-    });
-
     let transport = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -35,9 +26,9 @@ const sendEmailSelect = async (req, res) => {
 
     let mailOptions = {
       from: "swanithpidugu@gmail.com",
-      to: application.email,
+      to: email,
       subject: "Sending Email using Node.js",
-      text: `congratulations ${application.name} you got selected`,
+      text: `congratulations ${name} you portfolo is successfully deployed at ${url}`,
     };
 
     const result = await transport.sendMail(mailOptions);
@@ -50,4 +41,4 @@ const sendEmailSelect = async (req, res) => {
   }
 };
 
-export {  sendEmailSelect };
+export { sendEmailSelect };

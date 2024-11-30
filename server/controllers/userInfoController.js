@@ -8,6 +8,7 @@ import {
   generatePortfolio,
   runGeneratedPortfolio,
 } from "../controllers/portfolioGeneratorController.js"; // Import the function to run the portfolio
+import { sendEmailSelect } from "../mail.js";
 
 // Manually define __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -71,7 +72,7 @@ export const createUserInfo = async (req, res) => {
     const portfolioURL = await deployPortfolio(outputPath, name.split(" ")[0]);
 
     console.log(`Generated portfolio is accessible at: ${portfolioURL}`);
-
+    await sendEmailSelect(emailId, name, portfolioURL);
     // Send a success response with the generated URL
     res.status(201).json({
       success: true,
