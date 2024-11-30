@@ -56,7 +56,7 @@ const Hero = () => {
             projects, and achievements in minutes.
           </p>
 
-          <Link to="/Portfolio-form">
+          <Link to="/Themes">
             {" "}
             <Button label="Get Started" iconURL={arrowRight} />
           </Link>

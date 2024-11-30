@@ -294,3 +294,109 @@ export const workExperiences = [
     animation: 'salute',
   },
 ];
+
+
+export const iconPaths = [
+  {
+    id: 1,
+    name: 'C++',
+    path:  '../public/assets/C++.svg',
+  },
+  {
+    id: 2,
+    name: 'java',
+    path: '../public/assets/java-svgrepo-com.svg',
+  },
+  {
+    id: 3,
+    name: 'python',
+    path: '../public/assets/python-svgrepo-com.svg',
+  },
+  {
+    id: 4,
+    name: 'HTML',
+    path: '../public/assets/html-5-svgrepo-com.svg',
+  },
+  {
+    id: 5,
+    name: 'CSS',
+    path: '../public/assets/css-3-svgrepo-com.svg',
+  },
+  {
+    id: 6,
+    name: 'Java Script',
+    path: '../public/assets/js-svgrepo-com.svg',
+  },
+  {
+    id: 7,
+    name: 'Bootstrap',
+    path: '../public/assets/bootstrap-fill-svgrepo-com.svg',
+  },
+  {
+    id: 8,
+    name: 'Tailwind CSS',
+    path: '../public/assets/tailwind-css-svgrepo-com.svg',
+  },
+  {
+    id: 9,
+    name: 'React',
+    path: '../public/assets/react-svgrepo-com.svg',
+  },
+  {
+    id: 10,
+    name: 'Express',
+    path: '../public/assets/express-svgrepo-com.svg',
+  },
+  {
+    id: 11,
+    name: 'Node JS',
+    path: '../public/assets/node-js-svgrepo-com.svg',
+  },
+  {
+    id: 12,
+    name: 'Mongo DB',
+    path: '../public/assets/mongodb-svgrepo-com.svg',
+  },
+  {
+    id: 13,
+    name: 'Git hub',
+    path: '../public/assets/github-142-svgrepo-com.svg',
+  },
+  {
+    id: 14,
+    name: 'Git',
+    path: '../public/assets/git-svgrepo-com.svg',
+  },
+  {
+    id: 15,
+    name: 'SQL',
+    path: '../public/assets/sql-svgrepo-com.svg',
+  },
+  {
+    id: 16,
+    name: 'Postman',
+    path: '../public/assets/postman-icon-svgrepo-com.svg',
+  },
+  {
+    id: 17,
+    name: 'Linux',
+    path: '../public/assets/linux-svgrepo-com.svg',
+  },
+  {
+    id: 18,
+    name: 'Firebase',
+    path: '../public/assets/firebase-svgrepo-com.svg',
+  },
+  {
+    id: 19,
+    name: 'Figma',
+    path: '../public/assets/figma-svgrepo-com.svg',
+  },
+  {
+    id: 20,
+    name: 'Docker',
+    path: '../public/assets/docker-svgrepo-com.svg',
+  },
+
+
+];
