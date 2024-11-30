@@ -6,6 +6,7 @@ import Services from "./sections/Services";
 import CustomerReviews from "./sections/CustomerReviews";
 import Subscribe from "./sections/Subscribe";
 import PortfolioForm from "./sections/portfolioForm";
+import Themes from './sections/Themes'
 
 
 import {
@@ -48,6 +49,7 @@ function App() {
             }
           />
           <Route path="/Portfolio-form" element={<PortfolioForm />} />
+           <Route path="/Themes" element={<Themes/>}/>
         </Routes>
       </Router>
     </>
