@@ -11,7 +11,21 @@ function PortfolioForm() {
     name: "",
     emailId: "",
     phoneNo: "",
-    projects: [],
+    projects: [
+      { title: "",
+        description: "", technologies: [], repoLink: "" },
+   ],
+   resume: '',
+   experiences: [
+     {
+       companyName: '',
+       role: '',
+       description: '',
+       technologies: [], // Initialize as an array
+       duration: '',
+     },
+ 
+    ],
     resume: "",
     experiences: [
       {
@@ -311,16 +325,21 @@ function PortfolioForm() {
               {errors.name && (
                 <p className="text-red-500 text-sm mt-1">{errors.title}</p>
               )}
-              <input
-                required
-                type="text"
-                placeholder="Description"
-                value={project.description}
-                onChange={(e) =>
-                  handleChange(e, "projects", index, "description")
-                }
-                className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
-              />
+               
+              <textarea
+              required
+              type="text"
+              placeholder="Description"
+              value={project.description || ""}
+              onChange={(e) => handleChange(e, 'projects', index, 'description')}
+              className={`w-full mb-2 p-2 border rounded-lg ${
+                errors.projects?.[index]?.description
+                  ? "border-red-500"
+                  : "border-gray-300"
+              }`}
+            ></textarea> 
+
+
               <input
                 required
                 type="text"
