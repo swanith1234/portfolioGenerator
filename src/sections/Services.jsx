@@ -25,11 +25,11 @@ const services = [
 const Services = () => {
   return (
     <>
-        <section className="max-container flex flex-wrap justify-center gap-9 p-12 " id="Features"> 
+        <section className="max-container flex flex-wrap justify-center gap-9 p-12 " id="features"> 
 {services.map((service)=>(
   <ServiceCard key={service.label} {...service}/>
 ))}
- {/* //!padding p-10 */}
+ 
     </section>
     </>
   )

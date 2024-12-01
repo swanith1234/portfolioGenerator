@@ -1,6 +1,10 @@
 import React from 'react';
 import image4 from '../assets/image4.jpeg'
 import Button from '../components/Button';
+import arrowRight from '../assets/arrow-right.svg'
+import Theme6 from '../assets/Theme_6.png'
+
+import {Link} from "react-router-dom";
 
 const BuildYourBrand = () => {
   return (
@@ -11,7 +15,7 @@ const BuildYourBrand = () => {
     >
       <div className='flex flex-1 flex-col'>
         <h2 className='font-palanquin capitalize text-4xl lg:max-w-lg font-bold'>
-         Design your Dream 
+         Design your Dream
           <span className='text-amber-600'> Portfolio</span> Today
  
         </h2>
@@ -24,18 +28,23 @@ const BuildYourBrand = () => {
         <p className='mt-6 lg:max-w-lg info-text'>
         Let your work shine with minimal effort and maximum impact
         </p>
-        <div className='mt-11'>
-          <Button label='Get Started' />
-        </div>
+
+        <Link to="/Themes">
+            {" "}
+            <div className='mt-11'>
+            <Button label="Get Started" iconURL={arrowRight} />
+            </div>
+          </Link>
+     
       </div>
 
       <div className='flex-1 flex justify-center items-center'>
         <img
-          src={image4}
+          src={Theme6}
           alt='product detail'
           width={570}
           height={522}
-          className='object-contain'
+          className='object-contain rounded-lg'
         />
       </div>
     </section>

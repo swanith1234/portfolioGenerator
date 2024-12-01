@@ -9,13 +9,13 @@ import customer2 from '../assets/customer2.svg';
         imgURL: customer1,
         customerName: 'Morich Brown',
         rating: 4.5,
-        feedback: "The attention to detail and the quality of the product exceeded my expectations. Highly recommended!"
+        feedback: "Using this portfolio generator was a game-changer for me! I was able to create a professional portfolio in no time.",
     },
     {
         imgURL: customer2,
         customerName: 'Lota Mongeskar',
         rating: 4.5,
-        feedback: "The product not only met but exceeded my expectations. I'll definitely be a returning customer!"
+        feedback:  "The templates are beautifully designed and so easy to customize. My portfolio stands out thanks to this tool!",
     }
 ];
 

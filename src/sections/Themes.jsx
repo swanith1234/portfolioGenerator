@@ -80,7 +80,7 @@ const Themes = () => {
   </div>
 
     {/* Fourth Card */}
-    <div className="animate-slide-up">\
+    <div className="animate-slide-up">
     <Link to="/Portfolio-form">
     <div className="group relative  rounded-lg bg-white shadow-md transform transition duration-500 hover:scale-105">
       <img
