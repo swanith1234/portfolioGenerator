@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from "react";
-import './Loader.css'
+import "./Loader.css";
 
 const Loader = ({ show }) => {
+  console.log("Loading", show);
   const messages = [
     "The form is getting submitted.",
     "Your portfolio is getting ready.",
@@ -20,24 +20,24 @@ const Loader = ({ show }) => {
   }, []);
 
   // Ensure loader stays for at least 1 minute
-  const [forceShow, setForceShow] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => setForceShow(false), 60000);
-    return () => clearTimeout(timer);
-  }, []);
+  // const [forceShow, setForceShow] = useState(true);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => setForceShow(false), 60000);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
-  if (!show && !forceShow) return null;
+  if (!show) return null;
 
   return (
     <>
       <div className="loader-container">
-      <div className="loader">
-        <div className="loader-shadow"></div>
-        <div className="loader-box"></div>
+        <div className="loader">
+          <div className="loader-shadow"></div>
+          <div className="loader-box"></div>
+        </div>
+        <div className="loader-text">{messages[currentMessageIndex]}</div>
       </div>
-      <div className="loader-text">{messages[currentMessageIndex]}</div>
-    </div>
-    </>  
+    </>
   );
 };
 

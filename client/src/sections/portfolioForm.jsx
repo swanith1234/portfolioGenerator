@@ -2,29 +2,25 @@ import React, { useState } from "react";
 import { AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";
 import axios from "axios";
 import { uploadFile } from "../upload";
-import Loader from './Loader'
- 
+import Loader from "./Loader";
+import Select from "react-select";
 function PortfolioForm() {
   const [loading, setLoading] = useState(false);
- 
+
   const [formData, setFormData] = useState({
     name: "",
     emailId: "",
     phoneNo: "",
-    projects: [
-      { title: "",
-        description: "", technologies: [], repoLink: "" },
-   ],
-   resume: '',
-   experiences: [
-     {
-       companyName: '',
-       role: '',
-       description: '',
-       technologies: [], // Initialize as an array
-       duration: '',
-     },
- 
+    projects: [{ title: "", description: "", technologies: [], repoLink: "" }],
+    resume: "",
+    experiences: [
+      {
+        companyName: "",
+        role: "",
+        description: "",
+        technologies: [], // Initialize as an array
+        duration: "",
+      },
     ],
     resume: "",
     experiences: [
@@ -48,7 +44,18 @@ function PortfolioForm() {
     about: "",
     profilePhoto: "",
   });
-
+  const technologyOptions = [
+    { value: "React", label: "React" },
+    { value: "Angular", label: "Angular" },
+    { value: "Vue", label: "Vue" },
+    { value: "Node.js", label: "Node.js" },
+    { value: "Python", label: "Python" },
+    { value: "java", label: "Java" },
+    { value: "C#", label: "C#" },
+    { value: "Ruby", label: "Ruby" },
+    { value: "Go", label: "Go" },
+    { value: "C++", label: "C++" },
+  ];
   const handleAddItem = (field) => {
     const newItem =
       field === "projects"
@@ -69,6 +76,10 @@ function PortfolioForm() {
       ...prev,
       [field]: [...prev[field], newItem],
     }));
+  };
+  const handleTechnologyChange = (selectedOptions, field, index) => {
+    const selectedTechnologies = selectedOptions.map((option) => option.value);
+    handleChange(null, field, index, "technologies", selectedTechnologies);
   };
 
   const handleChange = (
@@ -207,32 +218,29 @@ function PortfolioForm() {
   const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
+    console.log(loading);
     e.preventDefault();
-
+    setLoading(true);
     const validationErrors = validateForm();
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-
       console.log("Form submitted successfully!");
       // Proceed with submission logic
     }
- setLoading(true);
-
-      try {
-        const res = await axios.post(
-          "http://localhost:3000/api/v1//post/userInfo",
-          formData
-        );
-        console.log("res", res);
-        if (res.data) {
-          setLoading(false);
-          window.location.href = res.data.portfolioURL;
-        }
-      } catch (error) {
-        console.error("Error submitting form:", error);
-      } 
-
+    console.log("formData", formData);
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/v1//post/userInfo",
+        formData
+      );
+      console.log("res", res);
+      if (res.data) {
+        setLoading(false);
+        window.location.href = res.data.portfolioURL;
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
     }
   };
 
@@ -309,7 +317,7 @@ function PortfolioForm() {
             >
               <AiOutlineDelete />
             </button>
-            <div>
+            <div style={{ width: "100%" }}>
               <input
                 required
                 type="text"
@@ -325,40 +333,33 @@ function PortfolioForm() {
               {errors.name && (
                 <p className="text-red-500 text-sm mt-1">{errors.title}</p>
               )}
-               
+
               <textarea
-              required
-              type="text"
-              placeholder="Description"
-              value={project.description || ""}
-              onChange={(e) => handleChange(e, 'projects', index, 'description')}
-              className={`w-full mb-2 p-2 border rounded-lg ${
-                errors.projects?.[index]?.description
-                  ? "border-red-500"
-                  : "border-gray-300"
-              }`}
-            ></textarea> 
-
-
-              <input
                 required
                 type="text"
-                placeholder="Technologies (comma-separated)"
-                value={project.technologies.join(", ")} // Join array to display in the input
-                onChange={(e) => {
-                  const technologies = e.target.value
-                    .split(",") // Split input by commas
-                    .map((item) => item.trim()) // Trim each item to remove leading/trailing spaces
-                    .filter(Boolean); // Remove any empty strings from the array
-                  handleChange(
-                    e,
-                    "projects",
-                    index,
-                    "technologies",
-                    technologies
-                  ); // Pass cleaned array to handleChange
-                }}
-                className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
+                placeholder="Description"
+                value={project.description || ""}
+                onChange={(e) =>
+                  handleChange(e, "projects", index, "description")
+                }
+                className={`w-full mb-2 p-2 border rounded-lg ${
+                  errors.projects?.[index]?.description
+                    ? "border-red-500"
+                    : "border-gray-300"
+                }`}
+              ></textarea>
+
+              <Select
+                isMulti
+                options={technologyOptions}
+                value={technologyOptions.filter((option) =>
+                  project.technologies.includes(option.value)
+                )}
+                onChange={(selectedOptions) =>
+                  handleTechnologyChange(selectedOptions, "projects", index)
+                }
+                placeholder="Select Technologies"
+                className="w-full mb-2"
               />
 
               <input
@@ -412,7 +413,7 @@ function PortfolioForm() {
             >
               <AiOutlineDelete className="mr-1" />
             </button>
-            <div>
+            <div style={{ width: "100%" }}>
               <input
                 required
                 type="text"
@@ -439,29 +440,19 @@ function PortfolioForm() {
                 }
                 className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
               ></textarea>
-              <input
-                required
-                type="text"
-                placeholder="Technologies (comma-separated)"
-                value={
-                  Array.isArray(experience.technologies)
-                    ? experience.technologies.join(", ")
-                    : ""
+              <Select
+                isMulti
+                options={technologyOptions}
+                value={technologyOptions.filter((option) =>
+                  experience.technologies.includes(option.value)
+                )}
+                onChange={(selectedOptions) =>
+                  handleTechnologyChange(selectedOptions, "experiences", index)
                 }
-                onChange={(e) =>
-                  handleChange(
-                    e,
-                    "experiences",
-                    index,
-                    "technologies",
-                    e.target.value
-                      .split(",")
-                      .map((item) => item.trim())
-                      .filter(Boolean)
-                  )
-                }
-                className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
+                placeholder="Select Technologies"
+                className="w-full mb-2"
               />
+
               <input
                 required
                 type="text"
@@ -627,8 +618,7 @@ function PortfolioForm() {
           Submit
         </button>
       </form>
-      <Loader show={loading}/>
-
+      <Loader show={loading} />
     </div>
   );
 }

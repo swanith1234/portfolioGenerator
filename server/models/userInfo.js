@@ -18,8 +18,8 @@ const userInfoSchema = new mongoose.Schema(
       {
         title: { type: String, required: true },
         description: { type: String },
-        technologiesUsed: { type: [String] },
-        repoOrSiteLink: { type: String },
+        technologies: { type: [String] },
+        repoLink: { type: String },
       },
     ],
     resume: {
@@ -39,15 +39,15 @@ const userInfoSchema = new mongoose.Schema(
       type: [String], // Array of technologies
       default: [],
     },
-    contactDetailsUrls: {
+    contactDetails: {
       type: [String], // GitHub, Instagram, LinkedIn, etc.
       default: [],
     },
-    codingProfilesUrls: {
+    codingProfiles: {
       type: [String], // Coding platform profiles
       default: [],
     },
-    certificationsUrls: {
+    certifications: {
       type: [String], // URLs of certification files
       default: [],
     },
