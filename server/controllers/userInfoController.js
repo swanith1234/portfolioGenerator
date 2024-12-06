@@ -34,7 +34,7 @@ export const createUserInfo = async (req, res) => {
     } = req.body;
 
     console.log("Request Body:", req.body);
-
+    console.log("Projects Selected", projects);
     // Create a new instance of the UserInfo model
     const newUser = new UserInfo({
       name,
@@ -62,23 +62,22 @@ export const createUserInfo = async (req, res) => {
     await generatePortfolio(templatePath, outputPath, savedUser);
 
     // Run the generated portfolio and retrieve the URL
-    // const portfolioURL = await runGeneratedPortfolio(
-    //   templatePath,
-    //   outputPath,
-    //   4000
-    // );
-
+    const runURL = await runGeneratedPortfolio(templatePath, outputPath, 4000);
+    console.log("local server", runURL);
     // Deploy the portfolio
-    const portfolioURL = await deployPortfolio(outputPath, name.split(" ")[0]);
+    const { repoUrl, deployedUrl } = await deployPortfolio(
+      outputPath,
+      name.split(" ")[0]
+    );
 
-    console.log(`Generated portfolio is accessible at: ${portfolioURL}`);
-    await sendEmailSelect(emailId, name, portfolioURL);
+    console.log(`Generated portfolio is accessible at: ${deployedUrl}`);
+    await sendEmailSelect(emailId, name, deployedUrl, repoUrl);
     // Send a success response with the generated URL
     res.status(201).json({
       success: true,
       message: "User portfolio created successfully!",
       data: savedUser,
-      portfolioURL: portfolioURL,
+      portfolioURL: deployedUrl,
     });
   } catch (error) {
     console.error("Error saving user portfolio:", error);

@@ -59,7 +59,14 @@ export const generatePortfolio = async (templatePath, outputPath, userData) => {
       .replace(`<Projects />`, `<Projects userData={userData} />`)
       .replace(`<Clients />`, `<Clients userData={userData} />`)
       .replace(`<WorkExperience />`, `<WorkExperience userData={userData} />`)
-      .replace(`<Contact />`, `<Contact userData={userData} />`)
+      .replace(`<Achievements />`, `<Achievements userData={userData} />`)
+      // .replace(`<Certifications />`, `<Certifications userData={userData} />`)
+      .replace(
+        `<Conta
+        
+        ct />`,
+        `<Contact userData={userData} />`
+      )
       .replace(`<Footer />`, `<Footer userData={userData} />`);
     await fs.writeFile(appFilePath, updatedAppContent, "utf-8");
 
@@ -328,7 +335,8 @@ async function deployToVercel({ projectPath, accessToken }) {
 
     // Step 2: Deploy to Vercel
     console.log("Deploying to Vercel...");
-    const deployCommand = `vercel --token ${accessToken} --prod --cwd ${projectPath} --yes`;
+    const deployCommand = `vercel deploy --token ${accessToken} --prod --cwd ${projectPath} --yes --force
+`;
     const output = await runVercelCommand(deployCommand, projectPath);
 
     // Extract the deployment URL from the output
@@ -406,8 +414,11 @@ export async function deployPortfolio(projectPath, userName) {
 
     console.log("Portfolio successfully deployed to Vercel at:", deployedUrl);
     console.log(`Your portfolio is live at: https://${repoName}.github.io`);
-    await deleteGeneratedFolder(projectPath);
-    return deployedUrl;
+    // await deleteGeneratedFolder(projectPath);
+    return {
+      repoUrl,
+      deployedUrl,
+    };
   } catch (error) {
     console.error("Deployment failed:", error.message);
   }
