@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import hamburger from "../assets/hamburger.svg";
-import headerLogo from "../assets/header-logo.svg";
+// import headerLogo from "../assets/header-logo.svg";
+import Logo from "../assets/Logo.png";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,15 +19,14 @@ const Navbar = () => {
 
   return (
     <header className="p-5 fixed z-20 w-full  ">
-      <nav className="flex justify-between items-center max-container">
-        {/* Logo */}
+      <nav className="flex justify-between items-center max-container h-[60px]">
         <a href="/">
           <img
-            src={headerLogo}
+            src={Logo}
             alt="logo"
-            width={129}
-            height={29}
-            className="m-0 w-[129px] h-[29px]"
+            width={150} // Adjusted width
+            height={40} // Adjusted height
+            className="m-0 w-[150px] h-[100px] object-cover" // Reflecting the adjusted dimensions
           />
         </a>
 
@@ -36,18 +36,13 @@ const Navbar = () => {
             <li key={item.label}>
               <a
                 href={item.href}
-                className="font-sans-serif leading-normal font-medium text-xl text-slate-gray hover:text-amber-600"
+                className="font-sans-serif leading-normal font-medium text-xl text-slate-gray hover:text-amber-600 "
               >
                 {item.label}
               </a>
             </li>
           ))}
         </ul>
-
-        {/* Sign-in link */}
-        <div className="flex gap-6 text-xl leading-normal font-medium font-montserrat max-lg:hidden">
-          <a href="/" className="hover:text-amber-600">Sign in</a>
-        </div>
 
         {/* Hamburger menu for smaller screens */}
         <div className="hidden max-lg:block">
@@ -59,9 +54,7 @@ const Navbar = () => {
 
       {/* Full-Screen Overlay */}
       {isMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center z-30 transition-all duration-300 ease-in-out"
-        >
+        <div className="fixed inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center z-30 transition-all duration-300 ease-in-out">
           {/* Close button */}
           <button
             onClick={() => setIsMenuOpen(false)}
@@ -84,17 +77,6 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
-
-          {/* Sign-in link */}
-          <div className="flex flex-col items-center gap-6 mt-10">
-            <a
-              href="/"
-              className="text-white text-xl font-medium hover:text-amber-500"
-              onClick={() => setIsMenuOpen(false)} // Close menu on sign-in click
-            >
-              Sign in
-            </a>
-          </div>
         </div>
       )}
     </header>

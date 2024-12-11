@@ -5,33 +5,26 @@ import { uploadFile } from "../upload";
 import Loader from "./Loader";
 import Select from "react-select";
 function PortfolioForm() {
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
     emailId: "",
     phoneNo: "",
+    techStacks: [""],
     projects: [{ title: "", description: "", technologies: [], repoLink: "" }],
     resume: "",
     experiences: [
       {
         companyName: "",
+        logo: "",
         role: "",
         description: "",
         technologies: [], // Initialize as an array
         duration: "",
       },
     ],
-    resume: "",
-    experiences: [
-      {
-        companyName: "",
-        role: "",
-        description: "",
-        technologies: [], // Initialize as an array
-        duration: "",
-      },
-    ],
+
     contactDetails: [""],
     codingProfiles: [""],
     certifications: [""],
@@ -48,13 +41,30 @@ function PortfolioForm() {
     { value: "React", label: "React" },
     { value: "Angular", label: "Angular" },
     { value: "Vue", label: "Vue" },
-    { value: "Node.js", label: "Node.js" },
-    { value: "Python", label: "Python" },
+
+    { value: "python", label: "Python" },
     { value: "java", label: "Java" },
     { value: "C#", label: "C#" },
     { value: "Ruby", label: "Ruby" },
     { value: "Go", label: "Go" },
     { value: "C++", label: "C++" },
+    { value: "HTML", label: "HTML" },
+    { value: "CSS", label: "CSS" },
+
+    { value: "Java Script", label: "Java Script" },
+    { value: "Bootstrap", label: "Bootstrap" },
+    { value: "Tailwind CSS", label: "Tailwind CSS" },
+    { value: "Express ", label: "Express" },
+    { value: "Node JS", label: "Node JS" },
+    { value: "Mongo DB", label: "Mongo DB" },
+    { value: "Git hub", label: "Git hub" },
+    { value: "Git", label: "Git" },
+    { value: "SQL", label: "SQL" },
+    { value: "Postman", label: "Postman" },
+    { value: "Linux", label: "Linux" },
+    { value: "Firebase", label: "Firebase" },
+    { value: "Figma", label: "Figma" },
+    { value: "Docker", label: "Docker" },
   ];
   const handleAddItem = (field) => {
     const newItem =
@@ -79,6 +89,9 @@ function PortfolioForm() {
   };
   const handleTechnologyChange = (selectedOptions, field, index) => {
     const selectedTechnologies = selectedOptions.map((option) => option.value);
+    if (field == "techStacks") {
+      handleChange(null, field, null, null, selectedTechnologies);
+    }
     handleChange(null, field, index, "technologies", selectedTechnologies);
   };
 
@@ -136,6 +149,7 @@ function PortfolioForm() {
 
     setFormData(newFormData);
     setErrors(newErrors);
+    console.log("Updated Form Data:", newFormData);
   };
 
   const validateForm = () => {
@@ -207,20 +221,57 @@ function PortfolioForm() {
     setFormData(newFormData);
   };
 
-  const handleImageChange = async (e) => {
-    console.log("image uploading");
+  const handleImageChange = async (e, field, index = null, subField = null) => {
+    console.log("Image uploading...");
+
+    // Get the selected file
     const file = e.target.files[0];
+    if (!file) {
+      console.error("No file selected.");
+      return;
+    }
+
+    // Upload the file and get the URL
     const uploadedPhoto = await uploadFile(file);
-    console.log("url", uploadedPhoto.url);
-    setFormData((prevData) => ({ ...prevData, images: uploadedPhoto.url }));
+    if (!uploadedPhoto || !uploadedPhoto.url) {
+      console.error("Failed to upload image.");
+      return;
+    }
+
+    console.log("Uploaded URL:", uploadedPhoto.url);
+
+    // Update form data
+    setFormData((prevData) => {
+      const updatedData = { ...prevData };
+
+      if (field === "profilePhoto") {
+        // Directly update the profile photo
+        updatedData.profilePhoto = uploadedPhoto.url;
+      } else if (field === "experiences" && index !== null && subField) {
+        // Update a specific company's logo or other field in experiences
+        updatedData.experiences = updatedData.experiences.map((exp, i) =>
+          i === index
+            ? {
+                ...exp,
+                [subField]: uploadedPhoto.url,
+              }
+            : exp
+        );
+      } else {
+        console.error("Invalid field or missing parameters for updating.");
+      }
+
+      return updatedData;
+    });
+
+    console.log("Updated form data:", formData);
   };
 
   const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
-    console.log(loading);
     e.preventDefault();
-    setLoading(true);
+    // setLoading(true);
     const validationErrors = validateForm();
     setErrors(validationErrors);
 
@@ -236,7 +287,7 @@ function PortfolioForm() {
       );
       console.log("res", res);
       if (res.data) {
-        setLoading(false);
+        // setLoading(false);
         window.location.href = res.data.portfolioURL;
       }
     } catch (error) {
@@ -302,7 +353,19 @@ function PortfolioForm() {
         {errors.name && (
           <p className="text-red-500 text-sm mt-1">{errors.phoneNo}</p>
         )}
-
+        <label className="block font-semibold mb-2">TechStacks</label>
+        <Select
+          isMulti
+          options={technologyOptions}
+          value={technologyOptions.filter((option) =>
+            formData.techStacks.includes(option.value)
+          )}
+          onChange={(selectedOptions) =>
+            handleTechnologyChange(selectedOptions, "techStacks")
+          }
+          placeholder="Select Technologies"
+          className="w-full mb-2"
+        />
         {/* Projects */}
         <label className="block font-semibold mb-2">Projects</label>
         {formData.projects.map((project, index) => (
@@ -386,7 +449,7 @@ function PortfolioForm() {
         <input
           required
           type="file"
-          onChange={handleImageChange}
+          onChange={(e) => handleImageChange(e, "profilePhoto")}
           className="mb-4"
         />
 
@@ -409,7 +472,7 @@ function PortfolioForm() {
             <button
               type="button"
               onClick={() => handleRemoveItem("experiences", index)}
-              className=" text-red-500 flex items-center"
+              className="text-red-500 flex items-center"
             >
               <AiOutlineDelete className="mr-1" />
             </button>
@@ -452,7 +515,6 @@ function PortfolioForm() {
                 placeholder="Select Technologies"
                 className="w-full mb-2"
               />
-
               <input
                 required
                 type="text"
@@ -463,9 +525,29 @@ function PortfolioForm() {
                 }
                 className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
               />
+              {/* Optional Company Logo Upload */}
+              <label className="block text-gray-600 text-sm mb-2">
+                Company Logo (Optional):
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) =>
+                  handleImageChange(e, "experiences", index, "logo")
+                }
+                className="w-full mb-2 p-2 border border-gray-300 rounded-lg"
+              />
+              {experience.companyLogo && (
+                <img
+                  src={experience.companyLogo}
+                  alt="Company Logo"
+                  className="w-20 h-20 object-cover mt-2 rounded-lg"
+                />
+              )}
             </div>
           </div>
         ))}
+
         <button
           type="button"
           onClick={() => handleAddItem("experiences")}
@@ -618,7 +700,7 @@ function PortfolioForm() {
           Submit
         </button>
       </form>
-      <Loader show={loading} />
+      {/* <Loader show={loading} /> */}
     </div>
   );
 }
