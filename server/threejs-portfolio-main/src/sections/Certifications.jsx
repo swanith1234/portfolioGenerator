@@ -1,23 +1,12 @@
-import { useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import { EffectCoverflow, Pagination, Navigation, Autoplay } from "swiper";
 
 const Certifications = ({ userData }) => {
-  const certificationCount = userData?.certifications?.length || 0;
-  console.log("certificationsCount", userData);
-  const [selectedCertificationIndex, setSelectedCertificationIndex] =
-    useState(0);
-
-  const handleNavigation = (direction) => {
-    setSelectedCertificationIndex((prevIndex) => {
-      if (direction === "previous") {
-        return prevIndex === 0 ? certificationCount - 1 : prevIndex - 1;
-      } else {
-        return prevIndex === certificationCount - 1 ? 0 : prevIndex + 1;
-      }
-    });
-  };
-
-  const currentCertification =
-    userData.certifications[selectedCertificationIndex];
+  const certificationImages = userData?.certifications || [];
 
   return (
     <section className="c-space my-20">
@@ -25,43 +14,117 @@ const Certifications = ({ userData }) => {
         My Certifications
       </p>
 
-      <div className="grid lg:grid-cols-2 grid-cols-1 mt-12 gap-5 w-full">
-        {/* Certification Details */}
-        <div className="flex flex-col gap-5 relative sm:p-10 py-10 px-5 shadow-2xl shadow-black-200">
-          <div className="flex flex-col gap-5 text-white-600 my-5">
-            <p className="text-white text-2xl font-semibold animatedText">
-              {currentCertification.title}
-            </p>
-            <p className="animatedText">{currentCertification.description}</p>
-          </div>
+      <div className="mt-12">
+        {certificationImages.length > 0 ? (
+          <Swiper
+            effect={"coverflow"}
+            grabCursor={true}
+            centeredSlides={true}
+            loop={true}
+            autoplay={{
+              delay: 3000, // Auto-slide delay in milliseconds
+              disableOnInteraction: false, // Keeps autoplay even when user interacts
+            }}
+            slidesPerView={"auto"}
+            coverflowEffect={{
+              rotate: 0,
+              stretch: 0,
+              depth: 100,
+              modifier: 2.5,
+            }}
+            pagination={{ el: ".swiper-pagination", clickable: true }}
+            navigation={{
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+              clickable: true,
+            }}
+            modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
+            className="swiper_container"
+          >
+            {certificationImages.map((imgSrc, index) => (
+              <SwiperSlide key={index}>
+                <img
+                  src={imgSrc}
+                  alt={`Certification ${index + 1}`}
+                  className="w-full h-auto rounded-lg object-cover"
+                />
+              </SwiperSlide>
+            ))}
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between items-center mt-7">
-            <button
-              className="arrow-btn"
-              onClick={() => handleNavigation("previous")}
-            >
-              <img src="/assets/left-arrow.png" alt="left arrow" />
-            </button>
-
-            <button
-              className="arrow-btn"
-              onClick={() => handleNavigation("next")}
-            >
-              <img
-                src="/assets/right-arrow.png"
-                alt="right arrow"
-                className="w-4 h-4"
-              />
-            </button>
-          </div>
-        </div>
-
-        {/* Placeholder */}
-        <div className="border border-black-300 bg-black-200 rounded-lg h-96 md:h-full flex items-center justify-center">
-          <p className="text-white text-center text-lg">Certification Viewer</p>
-        </div>
+            <div className="slider-controler">
+              <div className="swiper-button-prev slider-arrow">
+                <ion-icon name="arrow-back-outline"></ion-icon>
+              </div>
+              <div className="swiper-button-next slider-arrow">
+                <ion-icon name="arrow-forward-outline"></ion-icon>
+              </div>
+              <div className="swiper-pagination"></div>
+            </div>
+          </Swiper>
+        ) : (
+          <p className="text-center text-lg">No certifications available.</p>
+        )}
       </div>
+
+      {/* Styles */}
+      <style jsx>{`
+        .swiper_container {
+          height: 52rem;
+          padding: 2rem 0;
+          position: relative;
+        }
+
+        .swiper-slide {
+          width: 30rem;
+          height: 30rem;
+        }
+
+        .swiper-slide img {
+          width: 100%;
+          height: 100%;
+          border-radius: 1rem;
+          object-fit: cover;
+        }
+
+        .slider-controler {
+          position: relative;
+          bottom: 2rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .slider-controler .swiper-button-next {
+          left: 58%;
+          transform: translateX(-58%);
+        }
+
+        .slider-controler .swiper-button-prev {
+          left: 42%;
+          transform: translateX(-42%);
+        }
+
+        .slider-controler .slider-arrow {
+          background: white;
+          width: 3.5rem;
+          height: 3.5rem;
+          border-radius: 50%;
+          filter: drop-shadow(0px 8px 24px rgba(18, 28, 53, 0.1));
+        }
+
+        .slider-controler .slider-arrow ion-icon {
+          font-size: 2rem;
+          color: black;
+        }
+
+        .swiper-pagination .swiper-pagination-bullet {
+          background: gray;
+        }
+
+        .swiper-pagination .swiper-pagination-bullet-active {
+          background: #6a59ff;
+        }
+      `}</style>
     </section>
   );
 };
