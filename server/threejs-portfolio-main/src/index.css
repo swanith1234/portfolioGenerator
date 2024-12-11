@@ -1,4 +1,4 @@
-@import url('https://fonts.cdnfonts.com/css/general-sans');
+@import url("https://fonts.cdnfonts.com/css/general-sans");
 
 @tailwind base;
 @tailwind components;
@@ -10,7 +10,7 @@
 
 body {
   background: #010103;
-  font-family: 'General Sans', sans-serif;
+  font-family: "General Sans", sans-serif;
 }
 
 @layer utilities {
@@ -126,7 +126,7 @@ body {
 
   /* contact section */
   .contact-container {
-    @apply max-w-xl relative z-10 sm:px-10 px-5 mt-12;
+    @apply max-w-xl relative z-10 sm:px-10 px-5 mt-16;
   }
 
   .field-label {
@@ -194,4 +194,11 @@ body {
   100% {
     transform: rotate(0deg);
   }
+}
+.no-scrollbar {
+  @apply overflow-auto;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

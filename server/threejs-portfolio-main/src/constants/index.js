@@ -84,7 +84,7 @@ export const myProjects = [
       },
       {
         id: 3,
-        name: "NodeJs",
+        name: "Node.js",
         path: "/assets/node.svg",
       },
       {
@@ -94,7 +94,7 @@ export const myProjects = [
       },
       {
         id: 5,
-        name: "express",
+        name: "Express",
         path: "/assets/express.svg",
       },
     ],
@@ -418,6 +418,67 @@ export const iconPaths = [
   {
     id: 20,
     name: "Docker",
-    path: "/assets/docker-svgrepo-com.svg",
+    path: "/assets/docker-svgrepo-com (2).svg",
   },
+];
+export const platformIcons = [
+  {
+    name: "github",
+    domain: "github.com",
+    icon: "/assets/github-142-svgrepo-com.svg",
+  },
+  { name: "gitlab", domain: "gitlab.com", icon: "/assets/git-svgrepo-com.svg" },
+  {
+    name: "bitbucket",
+    domain: "bitbucket.org",
+    icon: "/assets/icons/bitbucket.png",
+  },
+  { name: "codepen", domain: "codepen.io", icon: "/assets/icons/codepen.png" },
+  {
+    name: "stack overflow",
+    domain: "stackoverflow.com",
+    icon: "/assets/icons/stackoverflow.png",
+  },
+  {
+    name: "codesandbox",
+    domain: "codesandbox.io",
+    icon: "/assets/icons/codesandbox.png",
+  },
+  {
+    name: "leetcode",
+    domain: "leetcode.com",
+    icon: "/assets/leetcode-svgrepo-com.svg",
+  },
+  {
+    name: "hackerrank",
+    domain: "hackerrank.com",
+    icon: "/assets/icons/hackerrank.png",
+  },
+  {
+    name: "geeksforgeeks",
+    domain: "geeksforgeeks.org",
+    icon: "/assets/geeksForGeeks.svg",
+  },
+
+  {
+    name: "facebook",
+    domain: "facebook.com",
+    icon: "/assets/geeksForGeeks.svg",
+  },
+  {
+    name: "linkedin",
+    domain: "linkedin.com",
+    icon: "/assets/linkedIn.svg",
+  },
+  {
+    name: "geeksforgeeks",
+    domain: "github.com",
+    icon: "/assets/geeksForGeeks.svg",
+  },
+  {
+    name: "twitter",
+    domain: "twitter.com",
+    icon: "/assets/geeksForGeeks.svg",
+  },
+  // Add more platforms as needed
 ];

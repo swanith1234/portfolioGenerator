@@ -29,9 +29,10 @@ const userInfoSchema = new mongoose.Schema(
     experiences: [
       {
         companyName: { type: String, required: true },
+        logo: { type: String },
         role: { type: String, required: true },
         description: { type: String },
-        technologiesUsed: { type: [String] },
+        technologies: { type: [String] },
         duration: { type: String }, // Optional for current roles
       },
     ],

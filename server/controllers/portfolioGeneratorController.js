@@ -60,7 +60,7 @@ export const generatePortfolio = async (templatePath, outputPath, userData) => {
       .replace(`<Clients />`, `<Clients userData={userData} />`)
       .replace(`<WorkExperience />`, `<WorkExperience userData={userData} />`)
       .replace(`<Achievements />`, `<Achievements userData={userData} />`)
-      // .replace(`<Certifications />`, `<Certifications userData={userData} />`)
+      .replace(`<Certifications />`, `<Certifications userData={userData} />`)
       .replace(
         `<Conta
         
@@ -323,20 +323,33 @@ async function enableGitHubPages({ repoName, accessToken, branch = "main" }) {
   }
 }
 
+async function createVercelConfig(projectPath) {
+  const vercelConfig = {
+    public: true, // Ensure the deployment is public
+  };
+
+  const configPath = path.join(projectPath, "vercel.json");
+  fs.writeFileSync(configPath, JSON.stringify(vercelConfig, null, 2), "utf8");
+  console.log("Generated `vercel.json` configuration.");
+}
+
 async function deployToVercel({ projectPath, accessToken }) {
   try {
     console.log(
       `Starting deployment to Vercel for project at: ${projectPath}...`
     );
 
-    // Step 1: Build the project
+    // Step 1: Generate `vercel.json` config
+    console.log("Generating Vercel configuration...");
+    await createVercelConfig(projectPath);
+
+    // Step 2: Build the project
     console.log("Building the project...");
     await runVercelCommand("npm run build", projectPath);
 
-    // Step 2: Deploy to Vercel
+    // Step 3: Deploy to Vercel
     console.log("Deploying to Vercel...");
-    const deployCommand = `vercel deploy --token ${accessToken} --prod --cwd ${projectPath} --yes --force
-`;
+    const deployCommand = `vercel deploy --token ${accessToken} --prod --public --cwd ${projectPath} --yes --force`;
     const output = await runVercelCommand(deployCommand, projectPath);
 
     // Extract the deployment URL from the output
