@@ -41,23 +41,21 @@ function PortfolioForm() {
     { value: "React", label: "React" },
     { value: "Angular", label: "Angular" },
     { value: "Vue", label: "Vue" },
-
-    { value: "python", label: "Python" },
-    { value: "java", label: "Java" },
+    { value: "Python", label: "Python" },
+    { value: "Java", label: "Java" },
     { value: "C#", label: "C#" },
     { value: "Ruby", label: "Ruby" },
     { value: "Go", label: "Go" },
     { value: "C++", label: "C++" },
     { value: "HTML", label: "HTML" },
     { value: "CSS", label: "CSS" },
-
     { value: "Java Script", label: "Java Script" },
     { value: "Bootstrap", label: "Bootstrap" },
     { value: "Tailwind CSS", label: "Tailwind CSS" },
-    { value: "Express ", label: "Express" },
+    { value: "Express", label: "Express" }, // Corrected value
     { value: "Node JS", label: "Node JS" },
     { value: "Mongo DB", label: "Mongo DB" },
-    { value: "Git hub", label: "Git hub" },
+    { value: "Git Hub", label: "Git Hub" },
     { value: "Git", label: "Git" },
     { value: "SQL", label: "SQL" },
     { value: "Postman", label: "Postman" },
@@ -65,7 +63,13 @@ function PortfolioForm() {
     { value: "Firebase", label: "Firebase" },
     { value: "Figma", label: "Figma" },
     { value: "Docker", label: "Docker" },
+    { value: "C", label: "C" },
+    { value: "NextJS", label: "NextJS" },
+    { value: "ThunderClient", label: "ThunderClient" },
+    { value: "AWS", label: "AWS" },
+    { value: "threeJS", label: "threeJS" },
   ];
+
   const handleAddItem = (field) => {
     const newItem =
       field === "projects"

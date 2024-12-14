@@ -21,10 +21,10 @@ const Certifications = ({ userData }) => {
             grabCursor={true}
             centeredSlides={true}
             loop={true}
-            autoplay={{
-              delay: 3000, // Auto-slide delay in milliseconds
-              disableOnInteraction: false, // Keeps autoplay even when user interacts
-            }}
+            // autoplay={{
+            //   delay: 3000, // Auto-slide delay in milliseconds
+            //   disableOnInteraction: false, // Keeps autoplay even when user interacts
+            // }}
             slidesPerView={"auto"}
             coverflowEffect={{
               rotate: 0,
@@ -46,7 +46,7 @@ const Certifications = ({ userData }) => {
                 <img
                   src={imgSrc}
                   alt={`Certification ${index + 1}`}
-                  className="w-full h-auto rounded-lg object-cover"
+                  className="w-full h-auto rounded-lg"
                 />
               </SwiperSlide>
             ))}
@@ -76,14 +76,13 @@ const Certifications = ({ userData }) => {
 
         .swiper-slide {
           width: 30rem;
-          height: 30rem;
+          height: 30rem !important;
         }
 
         .swiper-slide img {
           width: 100%;
           height: 100%;
-          border-radius: 1rem;
-          object-fit: cover;
+          object-fit: unset !important;
         }
 
         .slider-controler {
