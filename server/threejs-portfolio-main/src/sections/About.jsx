@@ -253,7 +253,7 @@ const About = ({ userData }) => {
                     )}
                     {getSocialMediaLink("facebook").isPresent && (
                       <a
-                        href={getSocialMediaLink("twitter").link}
+                        href={getSocialMediaLink("facebook").link}
                         class="social-icon facebook"
                       >
                         <svg
@@ -268,7 +268,7 @@ const About = ({ userData }) => {
                     )}
                     {getSocialMediaLink("linkedin").isPresent && (
                       <a
-                        href={getSocialMediaLink("twitter").link}
+                        href={getSocialMediaLink("linkedin").link}
                         class="social-icon linkedin"
                       >
                         <svg
@@ -283,7 +283,7 @@ const About = ({ userData }) => {
                     )}
                     {getSocialMediaLink("github").isPresent && (
                       <a
-                        href={getSocialMediaLink("twitter").link}
+                        href={getSocialMediaLink("github").link}
                         className="social-icon github"
                       >
                         <svg
@@ -358,7 +358,7 @@ const About = ({ userData }) => {
                 alt="grid-4"
                 className="w-full md:h-[126px] sm:h-[276px] h-fit object-cover sm:object-top"
               />
-              <div className="button">Phone Me</div>
+              <div className="button text-center p-2">Phone Me</div>
             </a>
             <div className="space-y-2">
               <div className="copy-container" onClick={handleCopy}>

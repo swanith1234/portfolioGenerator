@@ -368,7 +368,7 @@ export const iconPaths = [
   {
     id: 10,
     name: "Express",
-    path: "/assets/express-svgrepo-com.svg",
+    path: "/assets/express.svg",
   },
   {
     id: 11,
@@ -419,6 +419,32 @@ export const iconPaths = [
     id: 20,
     name: "Docker",
     path: "/assets/docker-svgrepo-com (2).svg",
+  },
+  {
+    id: 21,
+    name: "C",
+    path: "/assets/c.svg",
+  },
+  {
+    id: 20,
+    name: "NextJS",
+    path: "/assets/nextJs.svg",
+  },
+
+  {
+    id: 20,
+    name: "ThunderClient",
+    path: "/assets/thunderClient.svg",
+  },
+  {
+    id: 20,
+    name: "AWS",
+    path: "/assets/aws.svg",
+  },
+  {
+    id: 20,
+    name: "threeJS",
+    path: "/assets/threeJS.svg",
   },
 ];
 export const platformIcons = [

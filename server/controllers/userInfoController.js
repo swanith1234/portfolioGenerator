@@ -58,7 +58,10 @@ export const createUserInfo = async (req, res) => {
     const savedUser = await newUser.save();
 
     const templatePath = path.join(__dirname, "../threejs-portfolio-main");
-    const outputPath = path.join(__dirname, `../${name.split(" ")[0]}`);
+    const outputPath = path.join(
+      __dirname,
+      `../${name.split(" ")[0].toLowerCase()}`
+    );
 
     // Generate and deploy the portfolio
     await generatePortfolio(templatePath, outputPath, savedUser);
