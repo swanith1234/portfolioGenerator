@@ -3,6 +3,10 @@ Portfolio Generator
 Portfolio Generator is a cutting-edge MERN stack application designed to simplify the creation of personalized, responsive, and professional portfolios. With an intuitive UI and dynamic capabilities, users can create, customize, host, and share their portfolios effortlessly.
 
 
+
+https://github.com/user-attachments/assets/424ca4df-b648-48b8-879d-ee8497acc355
+
+
 ---
 
 Features
@@ -161,13 +165,7 @@ Contributions
 Contributions are welcome! Please feel free to fork the repository, submit issues, or create pull requests.
 
 
----
-
-License
-
-This project is licensed under the MIT License.
-
-
----
-
+ 
 Start creating portfolios effortlessly and leave a lasting impression with Portfolio Generator!
+
+
