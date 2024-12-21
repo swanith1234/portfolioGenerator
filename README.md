@@ -2,7 +2,7 @@ Portfolio Generator
 
 
 
-[![Thumbnail]([thumbnail-image-url.jpg](https://th.bing.com/th/id/R.14ad9b13993999439058d0a7bc51997d?rik=gpTA2TcGiLNlmQ&riu=http%3a%2f%2fcontentwriting101.com%2fwp-content%2fuploads%2f2020%2f09%2fBuild-Your-Portfolio.png&ehk=v3hCThjphn75nZ5rwGqMmn5jla8q1Eo0bOc85u4fZnk%3d&risl=&pid=ImgRaw&r=0
+[!((https://th.bing.com/th/id/R.14ad9b13993999439058d0a7bc51997d?rik=gpTA2TcGiLNlmQ&riu=http%3a%2f%2fcontentwriting101.com%2fwp-content%2fuploads%2f2020%2f09%2fBuild-Your-Portfolio.png&ehk=v3hCThjphn75nZ5rwGqMmn5jla8q1Eo0bOc85u4fZnk%3d&risl=&pid=ImgRaw&r=0
 ))](https://drive.google.com/file/d/1MqBnjKq2o34Pv55HOViU29F5zNqDzYK5/view?usp=sharing)
 
 
