@@ -427,7 +427,7 @@ export async function deployPortfolio(projectPath, userName) {
 
     console.log("Portfolio successfully deployed to Vercel at:", deployedUrl);
     console.log(`Your portfolio is live at: https://${repoName}.github.io`);
-    // await deleteGeneratedFolder(projectPath);
+    await deleteGeneratedFolder(projectPath);
     return {
       repoUrl,
       deployedUrl,
