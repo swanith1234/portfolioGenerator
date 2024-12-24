@@ -90,7 +90,7 @@ export const runGeneratedPortfolio = async (
   outputPath,
   port = 5000,
   devMode = false,
-  backendUrl // Add backend URL as a parameter
+  backendUrl="https://portfoliogenerator.onrender.com" // Add backend URL as a parameter
 ) => {
   return new Promise(async (resolve, reject) => {
     try {
