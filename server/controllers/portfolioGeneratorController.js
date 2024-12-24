@@ -111,15 +111,10 @@ export const runGeneratedPortfolio = async (
       });
 
       // Explicitly install Vite if it's missing
-      console.log("Installing Vite...");
-      await new Promise((resolve, reject) => {
-        const installViteProcess = exec("npm install vite", { cwd: outputPath }, (error) => {
-          if (error) {
-            console.error("Error installing Vite:", error);
-            return reject(error);
-          }
-          resolve();
-        });
+  if (!fs.existsSync(path.join("path_to_project", "node_modules", "vite"))) {
+  console.error("Vite is not installed. Installing now...");
+  execSync("npm install vite", { cwd: "path_to_project", stdio: "inherit" });
+}
 
         installViteProcess.stdout.on("data", (data) => console.log(data));
         installViteProcess.stderr.on("data", (data) => console.error(data));
