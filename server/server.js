@@ -11,7 +11,7 @@ import userRouter from "./routers/userInfo.js";
 dotenv.config({ path: "./config/config.env" });
 
 const app = express();
-
+console.log("after app");
 // Middleware
 app.use(
   cors({
@@ -34,6 +34,6 @@ dbConnection();
 
 // Routes
 app.use("/api/v1/", userRouter);
-
+console.log("after routes");
 // Export as a serverless function
 export default app;
