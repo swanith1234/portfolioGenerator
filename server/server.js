@@ -36,7 +36,7 @@ app.get("/", (req, res) => res.send("Welcome to the API"));
 // Routes
 app.use("/api/v1/", userRouter);
 console.log("after routes");
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   res.send("Hello, World!");
 });
 // Server
