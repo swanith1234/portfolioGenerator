@@ -90,11 +90,13 @@ export const runGeneratedPortfolio = async (
   outputPath,
   port = 5000,
   devMode = false,
-  backendUrl="https://portfoliogenerator.onrender.com" // Add backend URL as a parameter
+  backendUrl = "https://portfoliogenerator.onrender.com"
 ) => {
   return new Promise(async (resolve, reject) => {
     try {
       console.log("Installing dependencies...");
+      
+      // Install npm dependencies
       await new Promise((resolve, reject) => {
         const installProcess = exec("npm install", { cwd: outputPath }, (error) => {
           if (error) {
@@ -106,6 +108,21 @@ export const runGeneratedPortfolio = async (
 
         installProcess.stdout.on("data", (data) => console.log(data));
         installProcess.stderr.on("data", (data) => console.error(data));
+      });
+
+      // Explicitly install Vite if it's missing
+      console.log("Installing Vite...");
+      await new Promise((resolve, reject) => {
+        const installViteProcess = exec("npm install vite", { cwd: outputPath }, (error) => {
+          if (error) {
+            console.error("Error installing Vite:", error);
+            return reject(error);
+          }
+          resolve();
+        });
+
+        installViteProcess.stdout.on("data", (data) => console.log(data));
+        installViteProcess.stderr.on("data", (data) => console.error(data));
       });
 
       if (devMode) {
