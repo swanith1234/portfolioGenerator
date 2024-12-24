@@ -225,6 +225,9 @@ async function createGitHubRepo({
 function pushToGitHub({ repoUrl, projectPath, branch = "main" }) {
   try {
     console.log("Starting the deployment process in steps...");
+    console.log("Configuring Git user identity...");
+    execSync('git config --global user.name "Portfolio Generator"', { cwd: projectPath });
+    execSync('git config --global user.email "portfolio@generator.com"', { cwd: projectPath });
 
     // Step 1: Initialize Git if not already initialized
     if (!fs.existsSync(`${projectPath}/.git`)) {
