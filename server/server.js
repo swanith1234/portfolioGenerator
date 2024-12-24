@@ -31,6 +31,7 @@ app.use(
 
 // Database Connection
 dbConnection();
+app.get("/", (req, res) => res.send("Welcome to the API"));
 
 // Routes
 app.use("/api/v1/", userRouter);
