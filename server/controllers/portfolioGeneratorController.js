@@ -115,7 +115,15 @@ export const runGeneratedPortfolio = async (
 try {
   if (!fs.existsSync(path.join(outputPath, "node_modules", "vite"))) {
     console.error("Vite is not installed. Installing now...");
-    execSync("npm install -g vite", { cwd: outputPath, stdio: "inherit" });
+ exec("npx vite preview --port 5000", { cwd: outputPath }, (error, stdout, stderr) => {
+  if (error) {
+    console.error("Error running the preview server:", error);
+    console.error("stderr:", stderr);
+    return reject(error);
+  }
+  console.log("Vite preview server output:", stdout);
+});
+
   }
 } catch (error) {
   console.error("Error installing Vite:", error.message);
