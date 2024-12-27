@@ -67,8 +67,8 @@ export const createUserInfo = async (req, res) => {
     await generatePortfolio(templatePath, outputPath, savedUser);
 
     // Run the generated portfolio and retrieve the URL
-    // const runURL = await runGeneratedPortfolio(templatePath, outputPath, 4000);
-    // console.log("local server", runURL);
+    const runURL = await runGeneratedPortfolio(templatePath, outputPath, 4000);
+    console.log("local server", runURL);
     // Deploy the portfolio
     const { repoUrl, deployedUrl } = await deployPortfolio(
       outputPath,
