@@ -9,9 +9,9 @@ import userRouter from "./routers/userInfo.js";
 
 // Load environment variables
 dotenv.config({ path: "./config/config.env" });
-
+const port = process.env.PORT || 8000;
 const app = express();
-
+console.log("after app");
 // Middleware
 app.use(
   cors({
@@ -31,9 +31,17 @@ app.use(
 
 // Database Connection
 dbConnection();
+app.get("/", (req, res) => res.send("Welcome to the API"));
 
 // Routes
 app.use("/api/v1/", userRouter);
+console.log("after routes");
+app.get("/api", (req, res) => {
+  res.send("Hello, World!");
+});
+// Server
+app.listen(port, function () {
+  console.log("Server started at port " + port);
+});
 
-// Export as a serverless function
-export default app;
+
