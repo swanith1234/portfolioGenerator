@@ -89,50 +89,11 @@ export const runGeneratedPortfolio = async (
   templatePath,
   outputPath,
   port = 5000,
-  devMode = false,
-  backendUrl = "https://portfoliogenerator.onrender.com"
+  devMode = false // Toggle for running in development or production mode
 ) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("Installing dependencies...");
-      
-      // Install npm dependencies
-      await new Promise((resolve, reject) => {
-        const installProcess = exec("npm install", { cwd: outputPath }, (error) => {
-          if (error) {
-            console.error("Error installing dependencies:", error);
-            return reject(error);
-          }
-          resolve();
-        });
-
-        installProcess.stdout.on("data", (data) => console.log(data));
-        installProcess.stderr.on("data", (data) => console.error(data));
-      });
-
-
-// Explicitly install Vite if it's missing
-try {
-  if (!fs.existsSync(path.join(outputPath, "node_modules", "vite"))) {
-    console.error("Vite is not installed. Installing now...");
- exec("npx vite preview --port 5000", { cwd: outputPath }, (error, stdout, stderr) => {
-  if (error) {
-    console.error("Error running the preview server:", error);
-    console.error("stderr:", stderr);
-    return reject(error);
-  }
-  console.log("Vite preview server output:", stdout);
-});
-
-  }
-} catch (error) {
-  console.error("Error installing Vite:", error.message);
-  throw error; // Optionally rethrow the error if you want it to propagate
-} finally {
-  console.log("Vite installation check completed.");
-}
-
-      if (!devMode) {
+      if (devMode) {
         // Start the Vite development server
         console.log("Starting the development server...");
         const devCommand = "npm run dev";
@@ -148,44 +109,59 @@ try {
         devProcess.stderr.on("data", (data) => console.error(data));
 
         setTimeout(() => {
-          const url = `${backendUrl}/preview/${port}`; // Use backend URL for preview
+          const url = `http://localhost:${port}`;
           console.log(`Development server is running at: ${url}`);
           resolve(url);
-        }, 5000); // Wait for server to start
+        }, 3000); // Give time for the server to start
       } else {
-        // Build and preview the production build
+        // Build the project
         console.log("Building the project for production...");
-        await new Promise((resolve, reject) => {
-          const buildProcess = exec("npm run build", { cwd: outputPath }, (error) => {
-            if (error) {
-              console.error("Error during build:", error);
-              return reject(error);
-            }
-            resolve();
+        try {
+          await new Promise((resolve, reject) => {
+            const buildCommand = "npm run build";
+            const buildProcess = exec(
+              buildCommand,
+              { cwd: outputPath },
+              (error) => {
+                if (error) {
+                  console.error("Error during build:", error);
+                  return reject(error);
+                }
+                resolve();
+              }
+            );
+
+            buildProcess.stdout.on("data", (data) => console.log(data));
+            buildProcess.stderr.on("data", (data) => console.error(data));
           });
+        } catch (buildError) {
+          console.error("Failed to build the project:", buildError);
+          return reject(buildError);
+        }
 
-          buildProcess.stdout.on("data", (data) => console.log(data));
-          buildProcess.stderr.on("data", (data) => console.error(data));
-        });
-
+        // Run the built project using Vite preview
         console.log("Previewing the production build...");
         const previewCommand = `npx vite preview --port ${port}`;
-        const previewProcess = exec(previewCommand, { cwd: outputPath }, (error) => {
-          if (error) {
-            console.error("Error running the preview server:", error);
-            return reject(error);
+        const previewProcess = exec(
+          previewCommand,
+          { cwd: outputPath },
+          (error) => {
+            if (error) {
+              console.error("Error running the preview server:", error);
+              return reject(error);
+            }
           }
-        });
+        );
 
         // Log server output
         previewProcess.stdout.on("data", (data) => console.log(data));
         previewProcess.stderr.on("data", (data) => console.error(data));
 
         setTimeout(() => {
-          const url = `${backendUrl}/preview/${port}`; // Use backend URL for preview
+          const url = `http://localhost:${port}`;
           console.log(`Production preview is running at: ${url}`);
           resolve(url);
-        }, 5000); // Wait for server to start
+        }, 3000); // Give time for the server to start
       }
     } catch (err) {
       console.error("Unexpected error:", err);
@@ -193,6 +169,7 @@ try {
     }
   });
 };
+
 // Function to create a GitHub repository
 async function createGitHubRepo({
   repoName,
@@ -233,10 +210,6 @@ async function createGitHubRepo({
 function pushToGitHub({ repoUrl, projectPath, branch = "main" }) {
   try {
     console.log("Starting the deployment process in steps...");
-    console.log("Configuring Git user identity...");
- execSync('git config --global user.name "swanith1234"', { cwd: projectPath });
-execSync('git config --global user.email "swanithpidugu@gmail.com"', { cwd: projectPath });
-
 
     // Step 1: Initialize Git if not already initialized
     if (!fs.existsSync(`${projectPath}/.git`)) {
