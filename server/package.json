@@ -6,9 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build":"node server.js",
-    "start":"node server.js"
-    
+    "build": "node server.js",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
@@ -25,7 +24,8 @@
     "http-server": "^14.1.1",
     "mongoose": "^8.8.2",
     "nodemailer": "^6.9.16",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "punycode": "^2.3.1"
   },
   "devDependencies": {
     "gh-pages": "^6.2.0"
