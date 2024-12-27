@@ -135,7 +135,7 @@ try {
       if (!devMode) {
         // Start the Vite development server
         console.log("Starting the development server...");
-        const devCommand = "npm run dev";
+        const devCommand = "npm run start";
         const devProcess = exec(devCommand, { cwd: outputPath }, (error) => {
           if (error) {
             console.error("Error running the development server:", error);
@@ -156,7 +156,7 @@ try {
         // Build and preview the production build
         console.log("Building the project for production...");
         await new Promise((resolve, reject) => {
-          const buildProcess = exec("npm run build", { cwd: outputPath }, (error) => {
+          const buildProcess = exec("npm run start", { cwd: outputPath }, (error) => {
             if (error) {
               console.error("Error during build:", error);
               return reject(error);
