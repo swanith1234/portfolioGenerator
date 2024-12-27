@@ -132,7 +132,7 @@ try {
   console.log("Vite installation check completed.");
 }
 
-      if (devMode) {
+      if (!devMode) {
         // Start the Vite development server
         console.log("Starting the development server...");
         const devCommand = "npm run dev";
