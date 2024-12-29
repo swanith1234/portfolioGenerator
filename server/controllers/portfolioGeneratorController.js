@@ -28,6 +28,9 @@ try {
           console.log("Installing dependencies...in template");
           execSync('npm install', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
          console.log("checking vite in template");
+         console.log("Installing @vitejs/plugin-react...");
+execSync('npm install @vitejs/plugin-react --save-dev', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
+
 try {
   console.log("Checking Vite version...");
   const viteVersion =execSync('npx vite --version', {
@@ -147,6 +150,9 @@ export const runGeneratedPortfolio = async (
   devMode = false
 ) => {
   return new Promise(async (resolve, reject) => {
+    console.log("Installing @vitejs/plugin-react...");
+execSync('npm install @vitejs/plugin-react --save-dev', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
+
     try {
       if (devMode) {
         // Start Vite dev server
