@@ -7,6 +7,21 @@ export const generatePortfolio = async (templatePath, outputPath, userData) => {
   console.log("Generating portfolio at:", outputPath);
   const whichSh = execSync('which sh || echo "/bin/sh not found"', { stdio: 'pipe' }).toString();
 console.log(`Shell check result: ${whichSh}`);
+  const envPath = execSync('echo $PATH', { shell: '/usr/bin/sh', stdio: 'pipe' }).toString();
+console.log(`Environment PATH: ${envPath}`);
+try {
+  execSync('npx --version', { shell: '/usr/bin/sh', stdio: 'inherit' });
+  console.log('npx is available.');
+} catch (error) {
+  console.error('npx is not available:', error.message);
+}
+try {
+  const result = execSync('echo Hello from shell!', { shell: '/usr/bin/sh', stdio: 'pipe' }).toString();
+  console.log(`Shell output: ${result}`);
+} catch (error) {
+  console.error('Error running basic shell command:', error.message);
+}
+
 
   try {
        try {
@@ -18,8 +33,8 @@ try {
   const viteVersion =execSync('npx vite --version', {
   cwd: outputPath,
   stdio: 'inherit',
-  shell: '/bin/bash' // Use 'bash' explicitly
-}).toString();
+  shell: '/usr/bin/sh'
+});.toString();
   console.log(`Vite version: ${viteVersion}`);
 } catch (error) {
   console.error("Error checking Vite version:", error.message);
