@@ -5,66 +5,34 @@ import axios from "axios";
 import dotenv from "dotenv";
 export const generatePortfolio = async (templatePath, outputPath, userData) => {
   console.log("Generating portfolio at:", outputPath);
-  const whichSh = execSync('which sh || echo "/bin/sh not found"', { stdio: 'pipe' }).toString();
-console.log(`Shell check result: ${whichSh}`);
-  const envPath = execSync('echo $PATH', { shell: '/usr/bin/sh', stdio: 'pipe' }).toString();
-console.log(`Environment PATH: ${envPath}`);
-try {
-  execSync('npx --version', { shell: '/usr/bin/sh', stdio: 'inherit' });
-  console.log('npx is available.');
-} catch (error) {
-  console.error('npx is not available:', error.message);
-}
-try {
-  const result = execSync('echo Hello from shell!', { shell: '/usr/bin/sh', stdio: 'pipe' }).toString();
-  console.log(`Shell output: ${result}`);
-} catch (error) {
-  console.error('Error running basic shell command:', error.message);
-}
-
-
-  try {
-       try {
-          console.log("Installing dependencies...in template");
-          execSync('npm install', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
-         console.log("checking vite in template");
-         console.log("Installing @vitejs/plugin-react...");
-execSync('npm install @vitejs/plugin-react --save-dev', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
 
 try {
-  console.log("Checking Vite version...");
-  const viteVersion =execSync('npx vite --version', {
-  cwd: outputPath,
-  stdio: 'inherit',
-  shell: '/usr/bin/sh'
-}).toString();
-  console.log(`Vite version: ${viteVersion}`);
-} catch (error) {
-  console.error("Error checking Vite version:", error.message);
+  console.log("Installing dependencies...");
+  execSync('npm install', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
+
+  console.log("Installing @vitejs/plugin-react...");
+  execSync('npm install @vitejs/plugin-react --save-dev', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
+
+  console.log("Installing Tailwind CSS...");
+  execSync('npm install tailwindcss postcss autoprefixer', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
+
+  console.log("Initializing Tailwind CSS...");
+  execSync('npx tailwindcss init', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
+
+  console.log("Configuring Tailwind in CSS...");
+  const cssFilePath = path.join(templatePath, "src", "index.css");
+  let cssContent = `
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+  `;
+  await fs.writeFile(cssFilePath, cssContent, "utf-8");
+
+  console.log("Tailwind CSS setup completed.");
+} catch (err) {
+  console.error("Error during setup:", err.message);
 }
 
-         try {
-  const vitePath = execSync('npm ls vite --depth=0', { cwd: outputPath, stdio: 'pipe' }).toString();
-  console.log(`Vite installation check: ${vitePath}`);
-} catch (error) {
-  console.error('Vite is not installed or not found:', error.message);
-}
-
-         try {
-  execSync('node_modules/.bin/vite --version', {
-    cwd: outputPath,
-    stdio: 'inherit',
-    shell: '/usr/bin/sh'
-  });
-  console.log('Vite version checked successfully.');
-} catch (error) {
-  console.error('Failed to check Vite version using explicit path:', error.message);
-}
-
-
-       }
-    catch(err){
-      console.log("error in installation in template",err.message);}
     // Step 1: Copy the template to the output path
     await fs.copy(templatePath, outputPath);
 
@@ -185,6 +153,7 @@ try {
 } catch (error) {
   console.error("Error checking Vite version:", error.message);
 }
+          
 
 
           console.log("Building the project...");
