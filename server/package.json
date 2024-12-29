@@ -26,7 +26,8 @@
     "nodemailer": "^6.9.16",
     "path": "^0.12.7",
     "punycode": "^2.3.1",
-    "vite": "^5.4.11"
+    "vite": "^5.4.11",
+    "@vitejs/plugin-react": "^4.3.1",
   },
   "devDependencies": {
     "gh-pages": "^6.2.0",
