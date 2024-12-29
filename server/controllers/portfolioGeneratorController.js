@@ -5,6 +5,9 @@ import axios from "axios";
 import dotenv from "dotenv";
 export const generatePortfolio = async (templatePath, outputPath, userData) => {
   console.log("Generating portfolio at:", outputPath);
+  const whichSh = execSync('which sh || echo "/bin/sh not found"', { stdio: 'pipe' }).toString();
+console.log(`Shell check result: ${whichSh}`);
+
   try {
        try {
           console.log("Installing dependencies...in template");
@@ -12,7 +15,11 @@ export const generatePortfolio = async (templatePath, outputPath, userData) => {
          console.log("checking vite in template");
 try {
   console.log("Checking Vite version...");
-  const viteVersion = execSync('npx vite --version', { cwd: outputPath, stdio: 'pipe' }).toString();
+  const viteVersion =execSync('npx vite --version', {
+  cwd: outputPath,
+  stdio: 'inherit',
+  shell: '/bin/bash' // Use 'bash' explicitly
+}).toString();
   console.log(`Vite version: ${viteVersion}`);
 } catch (error) {
   console.error("Error checking Vite version:", error.message);
