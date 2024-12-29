@@ -26,7 +26,7 @@ try {
   try {
        try {
           console.log("Installing dependencies...in template");
-          execSync('npm install', { cwd: templatePath, stdio: 'inherit' });
+          execSync('npm install', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
          console.log("checking vite in template");
 try {
   console.log("Checking Vite version...");
@@ -39,6 +39,26 @@ try {
 } catch (error) {
   console.error("Error checking Vite version:", error.message);
 }
+
+         try {
+  const vitePath = execSync('npm ls vite --depth=0', { cwd: outputPath, stdio: 'pipe' }).toString();
+  console.log(`Vite installation check: ${vitePath}`);
+} catch (error) {
+  console.error('Vite is not installed or not found:', error.message);
+}
+
+         try {
+  execSync('node_modules/.bin/vite --version', {
+    cwd: outputPath,
+    stdio: 'inherit',
+    shell: '/usr/bin/sh'
+  });
+  console.log('Vite version checked successfully.');
+} catch (error) {
+  console.error('Failed to check Vite version using explicit path:', error.message);
+}
+
+
        }
     catch(err){
       console.log("error in installation in template",err.message);}
