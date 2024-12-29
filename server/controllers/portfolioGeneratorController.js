@@ -6,6 +6,20 @@ import dotenv from "dotenv";
 export const generatePortfolio = async (templatePath, outputPath, userData) => {
   console.log("Generating portfolio at:", outputPath);
   try {
+       try {
+          console.log("Installing dependencies...in template");
+          execSync('npm install', { cwd: templatePath, stdio: 'inherit' });
+         console.log("checking vite in template");
+try {
+  console.log("Checking Vite version...");
+  const viteVersion = execSync('npx vite --version', { cwd: outputPath, stdio: 'pipe' }).toString();
+  console.log(`Vite version: ${viteVersion}`);
+} catch (error) {
+  console.error("Error checking Vite version:", error.message);
+}
+       }
+    catch(err){
+      console.log("error in installation in template",err.message);}
     // Step 1: Copy the template to the output path
     await fs.copy(templatePath, outputPath);
 
@@ -116,7 +130,13 @@ export const runGeneratedPortfolio = async (
           console.log("Installing dependencies...");
           execSync('npm install', { cwd: outputPath, stdio: 'inherit' });
 console.log("checking vite");
-  execSync('npx vite --version', { cwd: outputPath });
+try {
+  console.log("Checking Vite version...");
+  const viteVersion = execSync('npx vite --version', { cwd: outputPath, stdio: 'pipe' }).toString();
+  console.log(`Vite version: ${viteVersion}`);
+} catch (error) {
+  console.error("Error checking Vite version:", error.message);
+}
 
 
           console.log("Building the project...");
