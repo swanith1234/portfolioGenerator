@@ -157,7 +157,7 @@ try {
 
 
           console.log("Building the project...");
-          execSync('npx vite build', { cwd: outputPath, stdio: 'inherit' });
+          execSync('npx vite build --debug', { cwd: outputPath, stdio: 'inherit' });
         } catch (error) {
           console.error("Error during build:", error.message);
           return reject(error);
