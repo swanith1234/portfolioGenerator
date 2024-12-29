@@ -25,7 +25,8 @@
     "mongoose": "^8.8.2",
     "nodemailer": "^6.9.16",
     "path": "^0.12.7",
-    "punycode": "^2.3.1"
+    "punycode": "^2.3.1",
+      "vite": "^4.0.0"
   },
   "devDependencies": {
     "gh-pages": "^6.2.0"
