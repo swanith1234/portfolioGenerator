@@ -151,7 +151,7 @@ export const runGeneratedPortfolio = async (
 ) => {
   return new Promise(async (resolve, reject) => {
     console.log("Installing @vitejs/plugin-react...");
-execSync('npm install @vitejs/plugin-react --save-dev', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
+execSync('npm install @vitejs/plugin-react --save-dev', { cwd: outputPath, stdio: 'inherit', shell: '/usr/bin/sh' });
 
     try {
       if (devMode) {
