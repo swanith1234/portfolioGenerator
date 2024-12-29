@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
- "build": "echo 'Build step complete'",
+    "build": "echo 'Build step complete'",
     "start": "node server.js"
   },
   "author": "",
@@ -32,7 +32,6 @@
   "devDependencies": {
     "gh-pages": "^6.2.0",
     "vite": "^5.4.11",
-     "@vitejs/plugin-react": "^4.3.1"
-  
-}
+    "@vitejs/plugin-react": "^4.3.1"
+  }
 }
