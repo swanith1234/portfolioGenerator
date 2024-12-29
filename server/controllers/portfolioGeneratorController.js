@@ -5,7 +5,7 @@ import axios from "axios";
 import dotenv from "dotenv";
 export const generatePortfolio = async (templatePath, outputPath, userData) => {
   console.log("Generating portfolio at:", outputPath);
-
+  try{
 try {
   console.log("Installing dependencies...");
   execSync('npm install', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
