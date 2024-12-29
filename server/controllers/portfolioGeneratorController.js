@@ -34,7 +34,7 @@ try {
   cwd: outputPath,
   stdio: 'inherit',
   shell: '/usr/bin/sh'
-});.toString();
+}).toString();
   console.log(`Vite version: ${viteVersion}`);
 } catch (error) {
   console.error("Error checking Vite version:", error.message);
