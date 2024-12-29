@@ -115,12 +115,9 @@ export const runGeneratedPortfolio = async (
         try {
           console.log("Installing dependencies...");
           execSync('npm install', { cwd: outputPath, stdio: 'inherit' });
-try {
+console.log("checking vite");
   execSync('npx vite --version', { cwd: outputPath });
-} catch (error) {
-  console.error("Vite is not installed or recognized:", error.message);
-  throw error;
-}
+
 
           console.log("Building the project...");
           execSync('npx vite build', { cwd: outputPath, stdio: 'inherit' });
