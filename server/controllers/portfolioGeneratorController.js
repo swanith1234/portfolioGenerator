@@ -84,84 +84,62 @@ export const generatePortfolio = async (templatePath, outputPath, userData) => {
     console.error("Error generating portfolio:", err);
   }
 };
-
 export const runGeneratedPortfolio = async (
   templatePath,
   outputPath,
   port = 5000,
-  devMode = false // Toggle for running in development or production mode
+  devMode = false
 ) => {
   return new Promise(async (resolve, reject) => {
     try {
       if (devMode) {
-        // Start the Vite development server
-        console.log("Starting the development server...");
+        // Start Vite dev server
         const devCommand = "npm run dev";
         const devProcess = exec(devCommand, { cwd: outputPath }, (error) => {
           if (error) {
-            console.error("Error running the development server:", error);
+            console.error("Error running development server:", error);
             return reject(error);
           }
         });
 
-        // Log server output
         devProcess.stdout.on("data", (data) => console.log(data));
         devProcess.stderr.on("data", (data) => console.error(data));
 
         setTimeout(() => {
           const url = `http://localhost:${port}`;
-          console.log(`Development server is running at: ${url}`);
+          console.log(`Development server running at: ${url}`);
           resolve(url);
-        }, 3000); // Give time for the server to start
+        }, 3000);
       } else {
-        // Build the project
-        console.log("Building the project for production...");
+        // Build project
         try {
-          await new Promise((resolve, reject) => {
-            const buildCommand = "npm run build";
-            const buildProcess = exec(
-              buildCommand,
-              { cwd: outputPath },
-              (error) => {
-                if (error) {
-                  console.error("Error during build:", error);
-                  return reject(error);
-                }
-                resolve();
-              }
-            );
+          console.log("Installing dependencies...");
+          execSync('npm install', { cwd: outputPath, stdio: 'inherit' });
 
-            buildProcess.stdout.on("data", (data) => console.log(data));
-            buildProcess.stderr.on("data", (data) => console.error(data));
-          });
-        } catch (buildError) {
-          console.error("Failed to build the project:", buildError);
-          return reject(buildError);
+          console.log("Building the project...");
+          execSync('npx vite build', { cwd: outputPath, stdio: 'inherit' });
+        } catch (error) {
+          console.error("Error during build:", error.message);
+          return reject(error);
         }
 
-        // Run the built project using Vite preview
-        console.log("Previewing the production build...");
+        // Preview production build
         const previewCommand = `npx vite preview --port ${port}`;
-        const previewProcess = exec(
-          previewCommand,
-          { cwd: outputPath },
-          (error) => {
-            if (error) {
-              console.error("Error running the preview server:", error);
-              return reject(error);
-            }
+        const previewProcess = exec(previewCommand, { cwd: outputPath }, (error) => {
+          if (error) {
+            console.error("Error running preview server:", error);
+            return reject(error);
           }
-        );
+        });
 
-        // Log server output
         previewProcess.stdout.on("data", (data) => console.log(data));
         previewProcess.stderr.on("data", (data) => console.error(data));
 
         setTimeout(() => {
           const url = `http://localhost:${port}`;
-          console.log(`Production preview is running at: ${url}`);
+          console.log(`Production preview running at: ${url}`);
           resolve(url);
-        }, 3000); // Give time for the server to start
+        }, 3000);
       }
     } catch (err) {
       console.error("Unexpected error:", err);
@@ -169,6 +147,7 @@ export const runGeneratedPortfolio = async (
     }
   });
 };
+
 
 // Function to create a GitHub repository
 async function createGitHubRepo({
