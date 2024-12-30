@@ -412,15 +412,16 @@ function runCommand(command) {
 }
 function runVercelCommand(command, cwd) {
   console.log("path: " + cwd);
-  return new Promise((resolve, reject) => {
-    exec(command, { cwd }, (error, stdout, stderr) => {
-      if (error) {
-        console.error(stderr);
-        return reject(error);
-      }
-      resolve(stdout);
-    });
-  });
+  // return new Promise((resolve, reject) => {
+  //   exec(command, { cwd }, (error, stdout, stderr) => {
+  //     if (error) {
+  //       console.error(stderr);
+  //       return reject(error);
+  //     }
+  //     resolve(stdout);
+  //   });
+  // });
+     execSync(command, { cwd: cwd, stdio: 'inherit', shell: '/usr/bin/sh'  });
 }
 // Main function to create and deploy the repository
 export async function deployPortfolio(projectPath, userName) {
