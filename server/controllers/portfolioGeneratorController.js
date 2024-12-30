@@ -3,202 +3,461 @@ import path from "path";
 import { exec, execSync } from "child_process";
 import axios from "axios";
 import dotenv from "dotenv";
-dotenv.config();
-
-// Helper function to execute shell commands
-function runCommand(command, cwd) {
-  return new Promise((resolve, reject) => {
-    exec(command, { cwd }, (error, stdout, stderr) => {
-      if (error) {
-        console.error(stderr);
-        return reject(error);
-      }
-      console.log(stdout);
-      resolve(stdout);
-    });
-  });
-}
-
 export const generatePortfolio = async (templatePath, outputPath, userData) => {
   console.log("Generating portfolio at:", outputPath);
-  try {
+  try{
+try {
+  console.log("Installing dependencies...");
+  execSync('npm install', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
+
+  console.log("Installing @vitejs/plugin-react...");
+  execSync('npm install @vitejs/plugin-react --save-dev', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
+
+  console.log("Installing Tailwind CSS...");
+  execSync('npm install tailwindcss postcss autoprefixer', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
+
+  console.log("Initializing Tailwind CSS...");
+  execSync('npx tailwindcss init', { cwd: templatePath, stdio: 'inherit', shell: '/usr/bin/sh' });
+
+  console.log("Configuring Tailwind in CSS...");
+  const cssFilePath = path.join(templatePath, "src", "index.css");
+  let cssContent = `
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+  `;
+  await fs.writeFile(cssFilePath, cssContent, "utf-8");
+
+  console.log("Tailwind CSS setup completed.");
+} catch (err) {
+  console.error("Error during setup:", err.message);
+}
+
     // Step 1: Copy the template to the output path
     await fs.copy(templatePath, outputPath);
 
-    console.log("Installing dependencies...");
-    execSync("npm install", { cwd: outputPath, stdio: "inherit" });
-
-    console.log("Installing Tailwind CSS and dependencies...");
-    execSync("npm install tailwindcss postcss autoprefixer", {
-      cwd: outputPath,
-      stdio: "inherit",
-    });
-    execSync("npx tailwindcss init", { cwd: outputPath, stdio: "inherit" });
-
-    const cssFilePath = path.join(outputPath, "src", "index.css");
-    const cssContent = `
-      @tailwind base;
-      @tailwind components;
-      @tailwind utilities;
-    `;
-    await fs.writeFile(cssFilePath, cssContent, "utf-8");
-
-    console.log("Configuring user data and processing files...");
-    const processFiles = async (dirPath) => {
+    // Step 2: Replace placeholders and convert .ejs to .jsx
+    const processEjsFiles = async (dirPath) => {
       const files = await fs.readdir(dirPath);
+
       for (const file of files) {
         const filePath = path.join(dirPath, file);
+
         const stats = await fs.stat(filePath);
         if (stats.isDirectory()) {
-          await processFiles(filePath);
+          // Recursively process subdirectories
+          await processEjsFiles(filePath);
         } else if (path.extname(file) === ".ejs") {
-          let content = await fs.readFile(filePath, "utf-8");
-          content = content
+          // Read the .ejs file
+          let fileContent = await fs.readFile(filePath, "utf-8");
+
+          // Replace placeholders with userData
+          fileContent = fileContent
             .replace(/{name}/g, userData.name || "Default Name")
             .replace(/{about}/g, userData.about || "Default About Text")
-            .replace(/{experience}/g, userData.experience || "Default Experience")
+            .replace(
+              /{experience}/g,
+              userData.experience || "Default Experience"
+            )
             .replace(/{skills}/g, userData.skills || "Default Skills");
+
+          // Rename the file to .jsx
           const newFilePath = filePath.replace(/\.ejs$/, ".jsx");
-          await fs.writeFile(newFilePath, content, "utf-8");
+
+          // Write the updated content back to the renamed file
+          await fs.writeFile(newFilePath, fileContent, "utf-8");
+
+          // Delete the old .ejs file
           await fs.unlink(filePath);
         }
       }
     };
 
-    await processFiles(outputPath);
+    await processEjsFiles(outputPath);
 
+    // Step 3: Update App.jsx to pass userData to all sections
     const appFilePath = path.join(outputPath, "src", "App.jsx");
     let appContent = await fs.readFile(appFilePath, "utf-8");
-    appContent = appContent
+    const updatedAppContent = appContent
       .replace(`const App = () => {`, `const App = ({ userData }) => {`)
-      .replace(/<([A-Za-z]+)\s?\/?>/g, `<$1 userData={userData} />`);
-    await fs.writeFile(appFilePath, appContent, "utf-8");
+      .replace(`<Hero />`, `<Hero userData={userData} />`)
+      .replace(`<About />`, `<About userData={userData} />`)
+      .replace(`<Navbar />`, `<Navbar userData={userData} />`)
+      .replace(`<Projects />`, `<Projects userData={userData} />`)
+      .replace(`<Clients />`, `<Clients userData={userData} />`)
+      .replace(`<WorkExperience />`, `<WorkExperience userData={userData} />`)
+      .replace(`<Achievements />`, `<Achievements userData={userData} />`)
+      .replace(`<Certifications />`, `<Certifications userData={userData} />`)
+      .replace(
+        `<Conta
+        
+        ct />`,
+        `<Contact userData={userData} />`
+      )
+      .replace(`<Footer />`, `<Footer userData={userData} />`);
+    await fs.writeFile(appFilePath, updatedAppContent, "utf-8");
 
+    // Step 4: Inject userData into main.jsx
     const mainFilePath = path.join(outputPath, "src", "main.jsx");
     let mainContent = await fs.readFile(mainFilePath, "utf-8");
-    mainContent = mainContent.replace(
+    const updatedMainContent = mainContent.replace(
       `<App />`,
       `<App userData={${JSON.stringify(userData)}} />`
     );
-    await fs.writeFile(mainFilePath, mainContent, "utf-8");
+    await fs.writeFile(mainFilePath, updatedMainContent, "utf-8");
 
     console.log("Portfolio generated successfully!");
   } catch (err) {
-    console.error("Error generating portfolio:", err.message);
+    console.error("Error generating portfolio:", err);
   }
 };
-
 export const runGeneratedPortfolio = async (
+  templatePath,
   outputPath,
   port = 5000,
   devMode = false
 ) => {
   return new Promise(async (resolve, reject) => {
+    console.log("Installing @vitejs/plugin-react...");
+execSync('npm install @vitejs/plugin-react --save-dev', { cwd: outputPath, stdio: 'inherit', shell: '/usr/bin/sh' });
+
     try {
       if (devMode) {
-        const devProcess = exec("npm run dev", { cwd: outputPath });
+        // Start Vite dev server
+        const devCommand = "npm run dev";
+        const devProcess = exec(devCommand, { cwd: outputPath }, (error) => {
+          if (error) {
+            console.error("Error running development server:", error);
+            return reject(error);
+          }
+        });
+
         devProcess.stdout.on("data", (data) => console.log(data));
         devProcess.stderr.on("data", (data) => console.error(data));
-        setTimeout(() => resolve(`http://localhost:${port}`), 3000);
-      } else {
-        console.log("Building the project...");
-        execSync("npm run build", { cwd: outputPath, stdio: "inherit" });
 
-        console.log("Starting preview server...");
-        const previewProcess = exec(
-          `npx vite preview --port ${port}`,
-          { cwd: outputPath },
-          (error) => {
-            if (error) return reject(error);
+        setTimeout(() => {
+          const url = `http://localhost:${port}`;
+          console.log(`Development server running at: ${url}`);
+          resolve(url);
+        }, 3000);
+      } else {
+        // Build project
+        try {
+          console.log("Installing dependencies...");
+          execSync('npm install', { cwd: outputPath, stdio: 'inherit' });
+console.log("checking vite");
+try {
+  console.log("Checking Vite version...");
+  const viteVersion = execSync('npx vite --version', { cwd: outputPath, stdio: 'pipe' }).toString();
+  console.log(`Vite version: ${viteVersion}`);
+} catch (error) {
+  console.error("Error checking Vite version:", error.message);
+}
+          
+
+
+          console.log("Building the project...");
+          execSync('npx vite build --debug', { cwd: outputPath, stdio: 'inherit' });
+        } catch (error) {
+          console.error("Error during build:", error.message);
+          return reject(error);
+        }
+
+        // Preview production build
+        const previewCommand = `npx vite preview --port ${port}`;
+        const previewProcess = exec(previewCommand, { cwd: outputPath }, (error) => {
+          if (error) {
+            console.error("Error running preview server:", error);
+            return reject(error);
           }
-        );
+        });
+
         previewProcess.stdout.on("data", (data) => console.log(data));
         previewProcess.stderr.on("data", (data) => console.error(data));
-        setTimeout(() => resolve(`http://localhost:${port}`), 3000);
+
+        setTimeout(() => {
+          const url = `http://localhost:${port}`;
+          console.log(`Production preview running at: ${url}`);
+          resolve(url);
+        }, 3000);
       }
     } catch (err) {
-      console.error("Error running portfolio:", err.message);
+      console.error("Unexpected error:", err);
       reject(err);
     }
   });
 };
 
-async function createGitHubRepo({ repoName, accessToken, description = "", isPrivate = false }) {
+
+// Function to create a GitHub repository
+async function createGitHubRepo({
+  repoName,
+  accessToken,
+  description = "",
+  isPrivate = false,
+}) {
   try {
+    const apiUrl = "https://api.github.com/user/repos";
+
+    console.log(`Creating repository: ${repoName}...`);
+
+    // Make POST request to GitHub API
     const response = await axios.post(
-      "https://api.github.com/user/repos",
-      { name: repoName, description, private: isPrivate },
-      { headers: { Authorization: `token ${accessToken}` } }
+      apiUrl,
+      {
+        name: repoName,
+        description,
+        private: isPrivate,
+      },
+      {
+        headers: {
+          Authorization: `token ${accessToken}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+      }
     );
+
     console.log("Repository created successfully:", response.data.html_url);
-    return response.data.clone_url;
+
+    return response.data.clone_url; // Return the repository's clone URL
   } catch (error) {
-    console.error("Error creating repository:", error.response?.data?.message);
+    console.error("Error creating repository:", error.response.data.message);
     throw error;
   }
 }
 
 function pushToGitHub({ repoUrl, projectPath, branch = "main" }) {
   try {
+    console.log("Starting the deployment process in steps...");
+
+    // Step 1: Initialize Git if not already initialized
     if (!fs.existsSync(`${projectPath}/.git`)) {
+      console.log("Initializing Git...");
       execSync("git init", { cwd: projectPath });
     }
 
-    execSync(`git remote add origin ${repoUrl}`, { cwd: projectPath });
-    execSync("git add .", { cwd: projectPath });
-    execSync('git commit -m "Initial commit"', { cwd: projectPath });
+    let remoteExists;
+    try {
+      // Check if remote origin exists
+      execSync("git remote get-url origin", { cwd: projectPath });
+      remoteExists = true;
+    } catch (error) {
+      remoteExists = false; // If an error occurs, the remote does not exist
+    }
+
+    if (remoteExists) {
+      // Update remote URL if it exists
+      console.log("Updating remote repository URL...");
+      execSync(`git remote set-url origin ${repoUrl}`, { cwd: projectPath });
+    } else {
+      // Add remote if it doesn't exist
+      console.log("Adding remote repository...");
+      execSync(`git remote add origin ${repoUrl}`, { cwd: projectPath });
+    }
+
+    // Ensure the correct branch name
+    console.log(`Ensuring branch ${branch} exists...`);
     execSync(`git branch -M ${branch}`, { cwd: projectPath });
+
+    // Step 2: Add node_modules to .gitignore if not already ignored
+
+    // Step 3: Divide the project into manageable chunks for commits
+    const largeFolders = ["dist", "public", "src"]; // Example of large folders
+    const remainingFiles = "."; // All other files and folders
+
+    // Commit each large folder individually
+    for (const folder of largeFolders) {
+      if (folder === "node_modules") {
+        console.log(`Skipping ignored folder: ${folder}`);
+        continue;
+      }
+
+      if (fs.existsSync(`${projectPath}/${folder}`)) {
+        console.log(`Adding and committing folder: ${folder}...`);
+        execSync(`git add ${folder}`, { cwd: projectPath });
+        execSync(`git commit -m "Add folder: ${folder}"`, { cwd: projectPath });
+      } else {
+        console.log(`Folder ${folder} does not exist, skipping...`);
+      }
+    }
+
+    // Commit the remaining files
+    console.log("Adding and committing remaining files...");
+    execSync(`git add ${remainingFiles}`, { cwd: projectPath });
+    execSync('git commit -m "Add remaining files"', { cwd: projectPath });
+
+    // Push all commits to the remote repository
+    console.log(`Pushing code to branch: ${branch}...`);
     execSync(`git push -u origin ${branch}`, { cwd: projectPath });
 
-    console.log("Code pushed successfully!");
+    console.log("Code pushed successfully in steps!");
   } catch (error) {
-    console.error("Error pushing to GitHub:", error.message);
+    console.error("Error during deployment:", error.message);
   }
 }
 
-async function deployToVercel({ projectPath, accessToken }) {
+async function enableGitHubPages({ repoName, accessToken, branch = "main" }) {
   try {
-    const deployCommand = `vercel deploy --token ${accessToken} --prod --yes`;
-    const output = await runCommand(deployCommand, projectPath);
-    const deployedUrlMatch = output.match(/https:\/\/.*\.vercel\.app/);
-    if (!deployedUrlMatch) {
-      throw new Error("Deployment failed: No deployment URL found.");
-    }
-    console.log("Deployment successful:", deployedUrlMatch[0]);
-    return deployedUrlMatch[0];
+    console.log(`Starting deployment for repository: ${repoName}...`);
+
+    // Step 1: Build the Project
+    console.log("Building the project...");
+    await runCommand("npm run build");
+
+    // Step 2: Deploy to GitHub Pages
+    console.log("Deploying to GitHub Pages...");
+    await runCommand("npm run deploy");
+
+    // Step 3: Enable GitHub Pages via API
+    console.log("Enabling GitHub Pages...");
+    const apiUrl = `https://api.github.com/repos/${repoName}/pages`;
+
+    const response = await axios.post(
+      apiUrl,
+      {
+        source: {
+          branch: branch,
+          path: "/",
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: "application/vnd.github+json",
+        },
+      }
+    );
+
+    console.log(
+      `GitHub Pages successfully enabled! Your site will be available at: ${response.data.html_url}`
+    );
+
+    return response.data.html_url; // Return the GitHub Pages URL
   } catch (error) {
-    console.error("Error deploying to Vercel:", error.message);
+    console.error(
+      "Error enabling GitHub Pages:",
+      error.response?.data?.message || error.message
+    );
     throw error;
   }
 }
 
+async function createVercelConfig(projectPath) {
+  const vercelConfig = {
+    public: true, // Ensure the deployment is public
+  };
+
+  const configPath = path.join(projectPath, "vercel.json");
+  fs.writeFileSync(configPath, JSON.stringify(vercelConfig, null, 2), "utf8");
+  console.log("Generated `vercel.json` configuration.");
+}
+
+async function deployToVercel({ projectPath, accessToken }) {
+  try {
+    console.log(
+      `Starting deployment to Vercel for project at: ${projectPath}...`
+    );
+
+  execSync('npm install -g vite vercel --save-dev', { cwd: projectPath, stdio: 'inherit', shell: '/usr/bin/sh' });
+    // Step 1: Generate `vercel.json` config
+    console.log("Generating Vercel configuration...");
+    await createVercelConfig(projectPath);
+
+    // Step 2: Build the project
+    console.log("Building the project...");
+    await runVercelCommand("npm run build", projectPath);
+
+    // Step 3: Deploy to Vercel
+    console.log("Deploying to Vercel...");
+    const deployCommand = `vercel deploy --token ${accessToken} --prod --public --cwd ${projectPath} --yes --force`;
+    const output = await runVercelCommand(deployCommand, projectPath);
+
+    // Extract the deployment URL from the output
+    const deployedUrlMatch = output.match(/https:\/\/.*\.vercel\.app/);
+    if (!deployedUrlMatch) {
+      throw new Error("Deployment failed: No deployment URL found.");
+    }
+
+    const deployedUrl = deployedUrlMatch[0];
+    console.log(`Deployment successful! Your site is live at: ${deployedUrl}`);
+
+    return deployedUrl; // Return the Vercel deployment URL
+  } catch (error) {
+    console.error("Error during deployment to Vercel:", error.message);
+    throw error;
+  }
+}
+
+// Helper function to execute shell commands
+function runCommand(command) {
+  return new Promise((resolve, reject) => {
+    const process = exec(command);
+
+    process.stdout.on("data", (data) => {
+      console.log(data.toString());
+    });
+
+    process.stderr.on("data", (data) => {
+      console.error(data.toString());
+    });
+
+    process.on("close", (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`Command failed with exit code ${code}`));
+      }
+    });
+  });
+}
+function runVercelCommand(command, cwd) {
+  console.log("path: " + cwd);
+  return new Promise((resolve, reject) => {
+    exec(command, { cwd }, (error, stdout, stderr) => {
+      if (error) {
+        console.error(stderr);
+        return reject(error);
+      }
+      resolve(stdout);
+    });
+  });
+}
+// Main function to create and deploy the repository
 export async function deployPortfolio(projectPath, userName) {
-  const repoName = userName;
-  const accessToken = process.env.GIT_ACCESS_TOKEN;
+  const repoName = userName; // Your desired repository name
+  const accessToken = process.env.GIT_ACCESS_TOKEN; // Replace with your GitHub PAT
 
   try {
+    // Step 1: Create GitHub repository
     const repoUrl = await createGitHubRepo({
       repoName,
       accessToken,
-      description: "Portfolio website",
+      description: "This is my portfolio website",
       isPrivate: false,
     });
 
+    // Step 2: Push project files to the repository
     pushToGitHub({ repoUrl, projectPath });
-
+    // await enableGitHubPages({ repoName, accessToken });
+    // Deploy the project to Vercel
     const deployedUrl = await deployToVercel({
       projectPath,
       accessToken: process.env.VERCEL_ACCESS_TOKEN,
     });
 
-    console.log("Portfolio successfully deployed:", deployedUrl);
-    return { repoUrl, deployedUrl };
+    console.log("Portfolio successfully deployed to Vercel at:", deployedUrl);
+    console.log(`Your portfolio is live at: https://${repoName}.github.io`);
+    await deleteGeneratedFolder(projectPath);
+    return {
+      repoUrl,
+      deployedUrl,
+    };
   } catch (error) {
     console.error("Deployment failed:", error.message);
   }
 }
 
-
+// Run the script
 async function deleteGeneratedFolder(outputPath) {
   const maxRetries = 3;
   let attempts = 0;
