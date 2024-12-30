@@ -197,3 +197,31 @@ export async function deployPortfolio(projectPath, userName) {
     console.error("Deployment failed:", error.message);
   }
 }
+
+
+async function deleteGeneratedFolder(outputPath) {
+  const maxRetries = 3;
+  let attempts = 0;
+
+  while (attempts < maxRetries) {
+    try {
+      console.log(`Waiting for processes to release folder: ${outputPath}`);
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2-second delay
+
+      console.log(`Attempting to delete folder: ${outputPath}`);
+      await fs.remove(outputPath);
+      console.log("Generated folder deleted successfully!");
+      break;
+    } catch (error) {
+      attempts++;
+      console.error(`Attempt ${attempts} failed:`, error.message);
+      if (attempts >= maxRetries) {
+        console.error(
+          "Maximum retry attempts reached. Could not delete folder."
+        );
+        throw error;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // 1-second retry delay
+    }
+  }
+}
