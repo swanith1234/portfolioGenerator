@@ -12,7 +12,7 @@
 
 </div>
 
-**Portfolio Generator** is a cutting-edge MERN stack application designed to simplify the creation of personalized, responsive, and professional portfolios. With an intuitive UI and dynamic capabilities, users can create, customize, host, and share their portfolios effortlessly.  
+**Portfolio Generator** is a cutting-edge MERN stack application designed to simplify the creation of personalized, responsive, and professional portfolios. With an intuitive UI and dynamic capabilities, users can create, customize, host, and share their portfolios effortlessly. **Click on the above Thumbnail to checkout the recording of my project**. 
 
 ---
 
