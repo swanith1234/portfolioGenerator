@@ -1,19 +1,11 @@
 <h1 align="center">Portfolio Generator</h1>
 
 <div align="center" style="position: relative; display: inline-block;">
-  <a href="https://drive.google.com/file/d/1MqBnjKq2o34Pv55HOViU29F5zNqDzYK5/view?usp=sharing">
-    <img
-      src="https://th.bing.com/th/id/R.14ad9b13993999439058d0a7bc51997d?rik=gpTA2TcGiLNlmQ&riu=http%3a%2f%2fcontentwriting101.com%2fwp-content%2fuploads%2f2020%2f09%2fBuild-Your-Portfolio.png&ehk=v3hCThjphn75nZ5rwGqMmn5jla8q1Eo0bOc85u4fZnk%3d&risl=&pid=ImgRaw&r=0"
-      alt="Portfolio Generator Thumbnail"
-      style="width: 100%; max-width: 100px; border-radius: 8px; position: relative"
-    />
+<video src="https://github.com/user-attachments/assets/f297c30f-2567-4994-9c2f-1ab4304f306d"/>
  
-  </a>
-
 </div>
 
-**Portfolio Generator** is a cutting-edge MERN stack application designed to simplify the creation of personalized, responsive, and professional portfolios. With an intuitive UI and dynamic capabilities, users can create, customize, host, and share their portfolios effortlessly. **Click on the above Thumbnail to checkout the recording of my project**. 
-
+**Portfolio Generator** is a cutting-edge MERN stack application designed to simplify the creation of personalized, responsive, and professional portfolios. With an intuitive UI and dynamic capabilities, users can create, customize, host, and share their portfolios effortlessly.
 ---
 
 ## **Features**  
